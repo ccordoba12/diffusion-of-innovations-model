@@ -72,58 +72,46 @@ end
 to go
   let t 0
   while [t < max-time] [
-    ; -- Adoption due to marketing
-;    ask consumers [
-;      let p random-float 1
-;
-;      if (color = red) and (p < marketing-effort) [
-;        set adopter 1
-;        set color blue
-;      ]
-;    ]
-
-    ; -- Adoption due to utility
-    let p 0
     ask consumers [
-      set p random-float 1
-
+      ; -- Adoption due to marketing --
+      let p random-float 1
       if (color = red) and (p < marketing-effort) [
         set adopter 1
         set color blue
         show "yes!"
       ]
 
-      if (count consumers with [adopter = 1]) > 0 [
-        ; -- Adopters at level 1
-        let adopters-level-1 (count link-neighbors with [adopter = 1])
+      ; -- Adoption due to utility --
 
-        ; Adopters at level 2
-        let adopters-level-2 (count neighbors-level-2 with [adopter = 1])
+      ; -- Adopters at level 1
+      let adopters-level-1 (count link-neighbors with [adopter = 1])
 
-        ; Total
-        let adopters-among-neighbors (adopters-level-1 + adopters-level-2)
+      ; Adopters at level 2
+      let adopters-level-2 (count neighbors-level-2 with [adopter = 1])
 
-        ; Only if a consumer has adopters among his neighbors, he decides to adopt!
-        if (adopters-among-neighbors > 0) [
+      ; Total
+      let adopters-among-neighbors (adopters-level-1 + adopters-level-2)
 
-          ; -- Ai value
-          let adopters-percentaje ( adopters-among-neighbors / number-of-neighbors )
+      ; Only if a consumer has adopters among his neighbors, he decides to adopt!
+      if (adopters-among-neighbors > 0) [
 
-          ; -- Computing xi
-          ifelse (adopters-percentaje > social-threshold)[
-            set local-influence 1
-          ][
-          set local-influence 0
-          ]
+        ; -- Ai value
+        let adopters-percentaje ( adopters-among-neighbors / number-of-neighbors )
 
-          ; -- Computing utility Ui
-          let utility ( (social-influence * local-influence) + (1 - social-influence) * individual-preference )
+        ; -- Computing xi
+        ifelse (adopters-percentaje > social-threshold)[
+          set local-influence 1
+        ][
+        set local-influence 0
+        ]
 
-          ;show utility
-          if utility > minimal-utility [
-            set adopter 1
-            set color blue
-          ]
+        ; -- Computing utility Ui
+        let utility ( (social-influence * local-influence) + (1 - social-influence) * individual-preference )
+
+        ;show utility
+        if utility > minimal-utility [
+          set adopter 1
+          set color blue
         ]
       ]
     ]
@@ -234,7 +222,7 @@ INPUTBOX
 179
 197
 network-randomness
-0.07
+0.05
 1
 0
 Number
@@ -268,7 +256,7 @@ VERTICAL
 SLIDER
 63
 295
-100
+96
 446
 social-influence
 social-influence
@@ -283,7 +271,7 @@ VERTICAL
 SLIDER
 108
 295
-145
+141
 449
 social-threshold
 social-threshold
@@ -304,7 +292,7 @@ minimal-utility
 minimal-utility
 0
 1
-0.4
+0.6
 0.05
 1
 NIL
