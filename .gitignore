@@ -1,1 +1,6 @@
+# IPython checkpoints
 .ipynb_checkpoints
+
+# Compiled python files
+*.py[oc]
+
