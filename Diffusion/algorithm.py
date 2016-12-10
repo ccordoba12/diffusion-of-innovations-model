@@ -233,3 +233,18 @@ def compute_run(number_of_times, parameters, max_time='complete_adoption'):
         return uniform_data
     else:
         return data
+
+
+def generate_parameters(parameters, name, values):
+    """
+    Generate a list of parameters for compute_run to do sensitivity analysis
+
+    name: Name of the parameter
+    values: A list of values for the given parameter we want to change
+    """
+    set_of_parameters = []
+    for val in values:
+        new_parameters = parameters.copy()
+        new_parameters[name] = val
+        set_of_parameters.append(new_parameters)
+    return set_of_parameters
