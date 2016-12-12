@@ -164,35 +164,25 @@ def evolution_step(graph, parameters, test=False):
     return len(current_adopters) - len(previous_adopters)
 
 
-def evolution(graph, parameters, max_time='complete_adoption',
-              compute_index=False, test=False):
+def evolution(graph, parameters, max_time, test=False):
     """Compute the evolution of the algorithm up to max_time"""
     # Save the adopters at each time during the evolution
     adopters = []
     
     # Compute the aggregation index during the evolution
-    if compute_index:
-        indexes = []
+    indexes = []
     
     # Perform the evolution
-    if max_time == 'complete_adoption':
-        while not all( [is_adopter(graph, x) for x in graph.nodes()] ):
-            adopters_at_t = evolution_step(graph, parameters, test)
-            adopters.append(adopters_at_t)
-            if compute_index:
-                indexes.append(clustering_index(graph))
-    else:
-        for t in range(max_time):
-            adopters_at_t = evolution_step(graph, parameters, test)
-            adopters.append(adopters_at_t)
+    for t in range(max_time):
+        adopters_at_t = evolution_step(graph, parameters, test)
+        adopters.append(adopters_at_t)
+        indexes.append(clustering_index(graph))
     
-    if compute_index:
-        return indexes
-    else:
-        return adopters
+    data = {'adopters': adopters, 'indexes': indexes}
+    return data
 
 
-def compute_run(number_of_times, parameters, max_time='complete_adoption'):
+def compute_run(number_of_times, parameters, max_time):
     """
     Compute a run of the algorithm
     
@@ -211,28 +201,18 @@ def compute_run(number_of_times, parameters, max_time='complete_adoption'):
         # No reflexivity data
         parameters['reflexivity'] = False
         set_seed(G, parameters)
-        adopters_no_rx = evolution(G, parameters, max_time=max_time)
+        adopters_no_rx = evolution(G, parameters, max_time)
         no_rx_data.append(adopters_no_rx)
 
         # Reflexivity data
         parameters['reflexivity'] = True
         set_seed(G, parameters, reset=True)
-        adopters_rx = evolution(G, parameters, max_time=max_time)
+        adopters_rx = evolution(G, parameters, max_time)
         rx_data.append(adopters_rx)
     
-    data = [no_rx_data, rx_data]
+    data = {'no_rx': no_rx_data, 'rx': rx_data}
     
-    # Make the evolution lists of the same length so they can be
-    # passed to Seaborn
-    if max_time == 'complete_adoption':
-        uniform_data = []
-        for li in data:
-            max_length = max([len(x) for x in li])
-            new_li = [x + [0] * (max_length - len(x)) for x in li]
-            uniform_data.append(new_li)
-        return uniform_data
-    else:
-        return data
+    return data
 
 
 def generate_parameters(parameters, name, values):
