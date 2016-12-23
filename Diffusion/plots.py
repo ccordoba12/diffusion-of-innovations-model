@@ -29,11 +29,11 @@ def plot_adopters(data, par_name, par_value, axis=None, cumulative=False,
                    ax=axis)
         axis.set_xlabel(r'$%s = %s$' % (par_name, str(par_value)),
                         fontsize=fontsize)
-        axis.legend(loc='upper right', fontsize=fontsize-2)
+        axis.legend(loc='best', fontsize=fontsize-2)
         axis.tick_params(axis='both', which='major', labelsize=fontsize-2)
     else:
         sns.tsplot(data=no_rx_data, condition='Without Reflexivity')
         sns.tsplot(data=rx_data, color='m', condition='With Reflexivity')
         plt.title(r'$%s = %s$' % (par_name, str(par_value)), fontsize=fontsize)
-        plt.legend(loc='upper right', fontsize=fontsize-2)
+        plt.legend(loc='best', fontsize=fontsize-2)
         plt.tick_params(axis='both', which='major', labelsize=fontsize-2)
