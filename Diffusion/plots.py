@@ -37,3 +37,20 @@ def plot_adopters(data, par_name, par_value, axis=None, cumulative=False,
         plt.title(r'$%s = %s$' % (par_name, str(par_value)), fontsize=fontsize)
         plt.legend(loc='best', fontsize=fontsize-2)
         plt.tick_params(axis='both', which='major', labelsize=fontsize-2)
+
+
+def plot_indexes(data, axis, critical_mass, max_time):
+    """
+    data contains the output of compute_run
+    """
+    rx_data = [d['indexes'] for d in data['rx']]
+
+    axis.yaxis.grid(False)
+    plt.setp(axis.get_xticklabels(), visible=False)
+    plt.setp(axis.get_yticklabels(), visible=False)
+    plt.setp(axis.yaxis.get_majorticklines(), visible=False)
+    plt.setp(axis.yaxis.get_minorticklines(), visible=False)
+
+    sns.tsplot(data=rx_data, color='m', ax=axis)
+    plt.plot([critical_mass] * max_time, '--', linewidth=1, color='0.5')
+
