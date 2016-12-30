@@ -209,8 +209,6 @@ def compute_run(number_of_times, parameters, max_time, dview=None):
 
     dview is direct view instance from an ipyparallel cluster.
     """
-    # Print the parameters of the run
-    print(parameters)
 
     # Perform the run
     if dview is None:
