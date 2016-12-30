@@ -182,36 +182,47 @@ def evolution(graph, parameters, max_time, test=False):
     return data
 
 
-def compute_run(number_of_times, parameters, max_time):
+def single_run(parameters, max_time):
+    parameters = parameters.copy()
+    G = generate_initial_conditions(parameters)
+
+    # No reflexivity data
+    parameters['reflexivity'] = False
+    set_seed(G, parameters)
+    adopters_no_rx = evolution(G, parameters, max_time)
+
+    # Reflexivity data
+    parameters['reflexivity'] = True
+    set_seed(G, parameters, reset=True)
+    adopters_rx = evolution(G, parameters, max_time)
+
+    return {'no_rx': adopters_no_rx,
+            'rx': adopters_rx}
+
+
+def compute_run(number_of_times, parameters, max_time, dview=None):
     """
-    Compute a run of the algorithm
+    Compute a run of the algorithm.
     
     A run consists in repeating the evolution of the algorithm under
-    the same conditions a certain number_of_times
+    the same conditions a certain number_of_times.
+
+    dview is direct view instance from an ipyparallel cluster.
     """
     # Print the parameters of the run
     print(parameters)
 
     # Perform the run
-    no_rx_data = []
-    rx_data = []
-    for i in range(number_of_times):
-        G = generate_initial_conditions(parameters)
+    if dview is None:
+        raw_data = map(lambda x: single_run(parameters, max_time),
+                       range(number_of_times))
+    else:
+        raw_data = dview.map_sync(lambda x: single_run(parameters, max_time),
+                                  range(number_of_times))
 
-        # No reflexivity data
-        parameters['reflexivity'] = False
-        set_seed(G, parameters)
-        adopters_no_rx = evolution(G, parameters, max_time)
-        no_rx_data.append(adopters_no_rx)
+    data = {'no_rx': [d['no_rx'] for d in raw_data],
+            'rx': [d['rx'] for d in raw_data]}
 
-        # Reflexivity data
-        parameters['reflexivity'] = True
-        set_seed(G, parameters, reset=True)
-        adopters_rx = evolution(G, parameters, max_time)
-        rx_data.append(adopters_rx)
-    
-    data = {'no_rx': no_rx_data, 'rx': rx_data}
-    
     return data
 
 
