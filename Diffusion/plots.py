@@ -80,6 +80,36 @@ def plot_global_utility(data, axis, activation_value, max_time):
     plt.plot([activation_value] * max_time, '--', linewidth=1, color='0.5')
 
 
+def multiplot_adopters(data, par_name, par_values, cumulative):
+    """
+    Plot several adopter graphs in the same plot.
+
+    data: data of compute_run.
+    par_name: Name of the main parameter that we are varying in the simulation.
+    par_values: List of values for the main parameter.
+                It can only contain 4 values.
+    cumulative: Whether to plot cumulative curvers or not.
+    """
+    if os.name == 'nt':
+        figsize = (9, 9)
+        fontsize = 11
+    else:
+        figsize = (10, 10)
+        fontsize = 15
+
+    f, axes = plt.subplots(2, 2, figsize=figsize, sharex=True, sharey=True)
+
+    for ax, d, v in zip(axes.flat, data, par_values):
+        plot_adopters(data=d,
+                      par_name=par_name,
+                      par_value=v,
+                      axis=ax,
+                      fontsize=fontsize,
+                      cumulative=cumulative)
+
+    f.tight_layout()
+
+
 def multiplot_adopters_and_global_utility(data, par_name, par_values,
                                           activation_value, max_time):
     """
