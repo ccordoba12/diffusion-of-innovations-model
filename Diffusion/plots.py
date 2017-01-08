@@ -59,10 +59,12 @@ def plot_global_utility(data, axis, activation_value, max_time):
     rx_data = [d['global_utility'] for d in data['rx']]
 
     axis.yaxis.grid(False)
+    axis.set_ylabel('$U_G$')
+
     plt.setp(axis.get_xticklabels(), visible=False)
     plt.setp(axis.get_yticklabels(), visible=False)
     plt.setp(axis.yaxis.get_majorticklines(), visible=False)
     plt.setp(axis.yaxis.get_minorticklines(), visible=False)
 
-    sns.tsplot(data=rx_data, color='m', ax=axis)
+    sns.tsplot(data=rx_data, color=sns.xkcd_rgb["medium green"], ax=axis)
     plt.plot([activation_value] * max_time, '--', linewidth=1, color='0.5')
