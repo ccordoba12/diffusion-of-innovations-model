@@ -79,14 +79,15 @@ def homophily_index(graph):
     return len(cross_gender_edges) / len(graph.edges())
 
 
-def clustering_index(graph):
+def compute_global_utility(graph):
     """
     Return an index that quantifies how big the size of adopter
-    clusters is in the entire population of consumers
-    
+    clusters is in the entire population of consumers. We call this
+    index 'Global utility' in our article.
+
     This index computes the cluster-size-weighted average of adopter
     clusters divided by the total number of consumers
-    
+
     So it goes from 0 to 1 and it's always increasing.
     """
     N = len(graph.nodes())
@@ -101,8 +102,8 @@ def clustering_index(graph):
         weigthed_average = np.average(cluster_sizes, weights=weights)
         # Since the index needs to go between 0 and 1, we need to divide between N
         # again
-        index = weigthed_average / N
-        return index
+        utility = weigthed_average / N
+        return utility
     else:
         return 0
 

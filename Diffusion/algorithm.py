@@ -11,8 +11,8 @@ import networkx as nx
 import numpy as np
 
 # Local imports
-from utils import (clustering_index, get_adopters, get_neighbors, is_adopter,
-                   logistic, set_seed, step)
+from utils import (compute_global_utility, get_adopters, get_neighbors,
+                   is_adopter, logistic, set_seed, step)
 
 
 def generate_initial_conditions(parameters):
@@ -70,8 +70,8 @@ def evolution_step(graph, parameters, test=False):
     # Compute quantities that depend on the global state of the system.
     # Thus they are the same for all agents during this time step
     if parameters['reflexivity']:
-        # Compute utility due to indirect social influence
-        indirect_utility = clustering_index(graph)
+        # Compute utility due to global influence
+        global_utility = compute_global_utility(graph)
 
         # Decide which activation function to use.
         if not test:
@@ -80,7 +80,7 @@ def evolution_step(graph, parameters, test=False):
             activation = step
         
         # Compute reflexivity index
-        reflexivity_index = activation(indirect_utility,
+        reflexivity_index = activation(global_utility,
                                        parameters['activation_sharpness'],
                                        parameters['critical_mass'])
         #print(reflexivity_index)
@@ -136,8 +136,8 @@ def evolution_step(graph, parameters, test=False):
             # or not
             alpha = np.random.random()
             if alpha < reflexivity_index:
-                utility = direct_utility + indirect_utility - \
-                          direct_utility * indirect_utility
+                utility = direct_utility + global_utility - \
+                          direct_utility * global_utility
             else:
                 utility = direct_utility
         else:
