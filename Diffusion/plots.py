@@ -111,7 +111,8 @@ def multiplot_adopters(data, par_name, par_values, cumulative):
 
 
 def multiplot_adopters_and_global_utility(data, par_name, par_values,
-                                          activation_value, max_time):
+                                          activation_value, cumulative,
+                                          max_time):
     """
     Plot adopters and global utility in the same graph.
 
@@ -168,7 +169,7 @@ def multiplot_adopters_and_global_utility(data, par_name, par_values,
                       par_value=v,
                       axis=ax_adopters,
                       fontsize=fontsize,
-                      cumulative=False)
+                      cumulative=cumulative)
 
         plot_global_utility(data=d,
                             axis=ax_top,
