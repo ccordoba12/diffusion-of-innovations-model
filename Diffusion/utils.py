@@ -147,3 +147,20 @@ def set_seed(graph, parameters, reset=False):
     for node_index in initial_adopters:
         node = graph.node[node_index]
         node['adopter'] = 1
+
+
+def compute_global_utility_activation_value(parameters):
+    """
+    Compute the first value of global utility that makes the
+    reflexivity index greater than zero.
+
+    This is the point at which reflexivity starts to be relevant
+    in the difussion process (but very slightly at the beginning
+    though)
+    """
+    for global_utility in np.arange(0, 0.5, 0.01):
+        reflexivity_index = logistic(global_utility,
+                                     parameters['activation_sharpness'],
+                                     parameters['critical_mass'])
+        if reflexivity_index > 0.005:
+            return global_utility
