@@ -4,3 +4,5 @@
 # Compiled python files
 *.py[oc]
 
+# Results directory
+*Results*
