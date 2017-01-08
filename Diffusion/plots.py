@@ -80,7 +80,7 @@ def plot_global_utility(data, axis, activation_value, max_time):
     plt.plot([activation_value] * max_time, '--', linewidth=1, color='0.5')
 
 
-def multiplot_adopters(data, par_name, par_values, cumulative):
+def multiplot_adopters(data, par_name, par_values, cumulative, filename):
     """
     Plot several adopter graphs in the same plot.
 
@@ -89,6 +89,7 @@ def multiplot_adopters(data, par_name, par_values, cumulative):
     par_values: List of values for the main parameter.
                 It can only contain 4 values.
     cumulative: Whether to plot cumulative curvers or not.
+    filename: Name of the file to save this figure to.
     """
     if os.name == 'nt':
         figsize = (9, 9)
@@ -108,11 +109,12 @@ def multiplot_adopters(data, par_name, par_values, cumulative):
                       cumulative=cumulative)
 
     f.tight_layout()
+    f.savefig(filename, dpi=f.dpi)
 
 
 def multiplot_adopters_and_global_utility(data, par_name, par_values,
                                           activation_value, cumulative,
-                                          max_time):
+                                          filename, max_time):
     """
     Plot adopters and global utility in the same graph.
 
@@ -121,6 +123,8 @@ def multiplot_adopters_and_global_utility(data, par_name, par_values,
     par_values: List of values for the main parameter.
                 It can only contain 4 values.
     activation_value: Global utility activation value.
+    cumulative: Whether to plot cumulative adopters curvers or not.
+    filename: Name of the file to save this figure to.
     max_time: Max time for the simulation.
     """
     if len(par_values) > 4:
@@ -180,3 +184,5 @@ def multiplot_adopters_and_global_utility(data, par_name, par_values,
         # rest
         if i == 0:
             top_ylim = ax_adopters.get_ylim()[1]
+
+    fig.savefig(filename, dpi=fig.dpi)
