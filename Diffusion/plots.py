@@ -39,11 +39,13 @@ def plot_adopters(data, par_name, par_value, axis=None, cumulative=False,
         plt.tick_params(axis='both', which='major', labelsize=fontsize-2)
 
 
-def plot_indexes(data, axis, critical_mass, max_time):
+def plot_global_utility(data, axis, critical_mass, max_time):
     """
-    data contains the output of compute_run
+    Plot global utility against time.
+
+    data: contains the output of compute_run.
     """
-    rx_data = [d['indexes'] for d in data['rx']]
+    rx_data = [d['global_utility'] for d in data['rx']]
 
     axis.yaxis.grid(False)
     plt.setp(axis.get_xticklabels(), visible=False)
@@ -53,4 +55,3 @@ def plot_indexes(data, axis, critical_mass, max_time):
 
     sns.tsplot(data=rx_data, color='m', ax=axis)
     plt.plot([critical_mass] * max_time, '--', linewidth=1, color='0.5')
-
