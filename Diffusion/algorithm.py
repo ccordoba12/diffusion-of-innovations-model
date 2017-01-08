@@ -163,45 +163,60 @@ def evolution_step(graph, parameters, test=False):
         node = graph.node[node_index]
         node['adopter'] = 1
     
-    # Return number of adopters at time t
+    # Return number of adopters at this step
     current_adopters = get_adopters(graph)
     return len(current_adopters) - len(previous_adopters)
 
 
 def evolution(graph, parameters, max_time, test=False):
-    """Compute the evolution of the algorithm up to max_time"""
+    """
+    Compute the evolution of the algorithm up to max_time.
+
+    Return: A dictionary with the number of adopters and the global
+    utility per time step.
+    """
     # Save the adopters at each time during the evolution
     adopters = []
     
-    # Compute the aggregation index during the evolution
-    indexes = []
+    # Compute the clustering index during the evolution
+    global_utility = []
     
     # Perform the evolution
     for t in range(max_time):
         adopters_at_t = evolution_step(graph, parameters, test)
         adopters.append(adopters_at_t)
-        indexes.append(clustering_index(graph))
+        global_utility.append(compute_global_utility(graph))
     
-    data = {'adopters': adopters, 'indexes': indexes}
+    data = {'adopters': adopters, 'global_utility': global_utility}
     return data
 
 
 def single_run(parameters, max_time):
+    """
+    Compute a single run (with and without reflexivity) of the algorithm
+    under the same conditions.
+
+    parameters: Dictionary of parameters for the algorithm.
+    max_time: Time to stop the algorithm.
+
+    Return: A dictionary with the number of adopters with and without
+    reflexivity.
+    """
     parameters = parameters.copy()
     G = generate_initial_conditions(parameters)
 
     # No reflexivity data
     parameters['reflexivity'] = False
     set_seed(G, parameters)
-    adopters_no_rx = evolution(G, parameters, max_time)
+    data_no_rx = evolution(G, parameters, max_time)
 
     # Reflexivity data
     parameters['reflexivity'] = True
     set_seed(G, parameters, reset=True)
-    adopters_rx = evolution(G, parameters, max_time)
+    data_rx = evolution(G, parameters, max_time)
 
-    return {'no_rx': adopters_no_rx,
-            'rx': adopters_rx}
+    return {'no_rx': data_no_rx,
+            'rx': data_rx}
 
 
 def compute_run(number_of_times, parameters, max_time, dview=None):
