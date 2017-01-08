@@ -14,7 +14,14 @@ import seaborn as sns
 def plot_adopters(data, par_name, par_value, axis=None, cumulative=False,
                   fontsize=15):
     """
-    data contains the output of compute_run
+    Plot number of adopters against time.
+
+    data: contains the output of compute_run.
+    par_name: Parameter name that we're varying in the simulation.
+    par_value: Parameter value that we're varying in the simulation.
+    axis: Matplotlib axis to add this plot (if any).
+    cumulative: Whether to plot the cumulative number of adopters or not
+    fontsize: Font size for legends and tick marks.
     """
     no_rx_data = [d['adopters'] for d in data['no_rx']]
     rx_data = [d['adopters'] for d in data['rx']]
