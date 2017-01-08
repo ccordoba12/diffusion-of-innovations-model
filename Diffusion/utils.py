@@ -6,10 +6,14 @@ Utility functions for the algorithm
 
 from __future__ import division
 
+import os.path as osp
 import random
 
 import networkx as nx
 import numpy as np
+
+
+LOCATION = osp.dirname(osp.abspath(__file__))
 
 
 def get_neighbors(graph, node, level):
