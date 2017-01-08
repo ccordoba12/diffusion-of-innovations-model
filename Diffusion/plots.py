@@ -6,9 +6,19 @@ Created on Sat Dec 10 10:45:16 2016
 @author: carlos
 """
 
+import os
+
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 import seaborn as sns
+
+
+if not os.name == 'nt':
+    matplotlib.rc('text', usetex=True)
+
+sns.set_style("whitegrid")
 
 
 def plot_adopters(data, par_name, par_value, axis=None, cumulative=False,
@@ -68,3 +78,74 @@ def plot_global_utility(data, axis, activation_value, max_time):
 
     sns.tsplot(data=rx_data, color=sns.xkcd_rgb["medium green"], ax=axis)
     plt.plot([activation_value] * max_time, '--', linewidth=1, color='0.5')
+
+
+def multiplot_adopters_and_global_utility(data, par_name, par_values,
+                                          activation_value, max_time):
+    """
+    Plot adopters and global utility in the same graph.
+
+    data: data of compute_run.
+    par_name: Name of the main parameter that we are varying in the simulation.
+    par_values: List of values for the main parameter.
+                It can only contain 4 values.
+    activation_value: Global utility activation value.
+    max_time: Max time for the simulation.
+    """
+    if len(par_values) > 4:
+        print("The parameter values list passed to this function "
+              "can only contain 4 or less values.")
+        return
+
+    if os.name == 'nt':
+        figsize = (9, 9)
+        fontsize = 11
+    else:
+        figsize = (10, 10)
+        fontsize = 15
+
+    fig = plt.figure(figsize=figsize)
+
+    # Grid of 2x2 plots
+    outer_grid = gridspec.GridSpec(2, 2, hspace=0.15)
+
+    # Default value for adopters top_ylim plots
+    # (This is here to avoid linting complaints)
+    top_ylim = 0
+
+    for i, d, v in zip(range(4), data, par_values):
+        inner_grid = gridspec.GridSpecFromSubplotSpec(2, 1, subplot_spec=outer_grid[i],
+                                                      height_ratios=[1, 2.6],
+                                                      hspace=0.02)
+        ax_top = plt.Subplot(fig, inner_grid[0])
+        ax_adopters = plt.Subplot(fig, inner_grid[1])
+
+        # Set ylim for adopters plot
+        if i > 0:
+            ax_adopters.set_ylim(top=top_ylim)
+
+        # Set tick marks per plot
+        if i == 0 or i == 1:
+            plt.setp(ax_adopters.get_xticklabels(), visible=False)
+        if i == 1 or i == 3:
+            plt.setp(ax_adopters.get_yticklabels(), visible=False)
+
+        fig.add_subplot(ax_adopters)
+        fig.add_subplot(ax_top, sharex=ax_adopters)
+
+        plot_adopters(data=d,
+                      par_name=par_name,
+                      par_value=v,
+                      axis=ax_adopters,
+                      fontsize=fontsize,
+                      cumulative=False)
+
+        plot_global_utility(data=d,
+                            axis=ax_top,
+                            activation_value=activation_value,
+                            max_time=max_time)
+
+        # Save top ylim of the first plot to use it for the
+        # rest
+        if i == 0:
+            top_ylim = ax_adopters.get_ylim()[1]
