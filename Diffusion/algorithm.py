@@ -53,10 +53,14 @@ def generate_initial_conditions(parameters):
 def evolution_step(graph, parameters, test=False):
     """
     Function that computes the evolution step of the diffusion process
-    that occurs in a small-world graph
+    that occurs in a small-world graph with a given set of parameters
     
-    `parameters` is a dictionary that contains the parameters that
-    control the evolution.
+    parameters: Dictionary that contains the parameters that control
+    the evolution.
+    test: Test with a step function instead of the logistic one for
+    the reflexivity_index.
+
+    Returns: The number of adopters in a given time step.
     """
     
     #minimal_utility = parameters['minimal_utility']
@@ -97,7 +101,7 @@ def evolution_step(graph, parameters, test=False):
                 adopters_at_step.append(node_index)
                 continue
 
-        # -- Compute utility due to direct social influence
+        # -- Compute utility due to local influence
         # Adopters
         if node['neighbors']:
             neighbors = node['neighbors']
@@ -106,7 +110,7 @@ def evolution_step(graph, parameters, test=False):
         adopters_among_neighbors = [x for x in neighbors if is_adopter(graph, x)]
 
         # Only if a consumer has adopters among his neighbors, he computes
-        # his direct utility
+        # his local utility
         if len(adopters_among_neighbors) > 0:
 
             # Ai value
@@ -124,11 +128,11 @@ def evolution_step(graph, parameters, test=False):
             else:
                 individual_preference = 0
 
-            # Computing utility Ui
-            direct_utility = parameters['social_influence'] * local_influence + \
+            # Computing local utility ULi
+            local_utility = parameters['social_influence'] * local_influence + \
                              (1 - parameters['social_influence']) * individual_preference
         else:
-            direct_utility = 0
+            local_utility = 0
         
         # -- Compute utility if reflexivity is on or off
         if parameters['reflexivity']:
@@ -136,12 +140,12 @@ def evolution_step(graph, parameters, test=False):
             # or not
             alpha = np.random.random()
             if alpha < reflexivity_index:
-                utility = direct_utility + global_utility - \
-                          direct_utility * global_utility
+                utility = local_utility + global_utility - \
+                          local_utility * global_utility
             else:
-                utility = direct_utility
+                utility = local_utility
         else:
-            utility = direct_utility
+            utility = local_utility
         
         # Decide to adopt if agent's utility is higher than a minimal
         # utility
