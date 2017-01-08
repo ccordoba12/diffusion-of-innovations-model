@@ -46,11 +46,15 @@ def plot_adopters(data, par_name, par_value, axis=None, cumulative=False,
         plt.tick_params(axis='both', which='major', labelsize=fontsize-2)
 
 
-def plot_global_utility(data, axis, critical_mass, max_time):
+def plot_global_utility(data, axis, activation_value, max_time):
     """
     Plot global utility against time.
 
-    data: contains the output of compute_run.
+    data: Contains the output of compute_run.
+    axis: Matplotlib axis to add this plot to.
+    activation_value: First global utility value for which the
+                      reflexivity index is greater than zero.
+    max_time: Max simulation time.
     """
     rx_data = [d['global_utility'] for d in data['rx']]
 
@@ -61,4 +65,4 @@ def plot_global_utility(data, axis, critical_mass, max_time):
     plt.setp(axis.yaxis.get_minorticklines(), visible=False)
 
     sns.tsplot(data=rx_data, color='m', ax=axis)
-    plt.plot([critical_mass] * max_time, '--', linewidth=1, color='0.5')
+    plt.plot([activation_value] * max_time, '--', linewidth=1, color='0.5')
