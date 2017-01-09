@@ -26,6 +26,7 @@ main_parameter = 'social_influence'
 parameter_values = [0.1, 0.5, 0.7, 0.9]
 number_of_times = 50
 max_time = 60
+cumulative = True
 
 # Parameters
 parameters = dict(
@@ -77,7 +78,8 @@ run = dict(
     main_parameter=main_parameter,
     parameter_values=parameter_values,
     number_of_times=number_of_times,
-    max_time=max_time
+    max_time=max_time,
+    cumulative=cumulative
 )
 
 # Create a dict with all the needed paramaters
@@ -136,6 +138,6 @@ multiplot_adopters_and_global_utility(data=data,
                                       par_name=article_parameters[main_parameter],
                                       par_values=parameter_values,
                                       activation_value=activation_value,
-                                      cumulative=True,
+                                      cumulative=cumulative,
                                       filename=fig_filename,
                                       max_time=max_time)
