@@ -22,25 +22,26 @@ from utils import LOCATION, compute_global_utility_activation_value
 #==============================================================================
 # Simulation parameters and values
 #==============================================================================
-main_parameter = 'social_influence'
-parameter_values = [0.1, 0.5, 0.7, 0.9]
 number_of_times = 50
-max_time = 60
+parameter_values = [0.1, 0.4, 0.7, 0.9]
 cumulative = True
+main_parameter = 'social_influence'
+max_time = 160
+
 
 # Parameters
 parameters = dict(
-    randomness = 0.01,
-    number_of_neighbors = 15,
-    initial_seed = 0.001,
-    adopters_threshold = 0.4,
+    number_of_consumers = 1000,
     social_influence = 0.7,
+    randomness = 0.01,
+    activation_sharpness = 40,
+    level = 1,
     quality = 0.5,
-    number_of_consumers = 3000,
-    activation_sharpness = 70,
-    critical_mass = 0.50,
+    initial_seed = 0.001,
+    critical_mass = 0.5,
+    number_of_neighbors = 10,
+    adopters_threshold = 0.5,
     marketing_effort = 0,
-    level = 1
 )
 
 
