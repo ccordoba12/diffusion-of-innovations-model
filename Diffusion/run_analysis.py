@@ -7,8 +7,6 @@ Run a complete analysis for a give parameter
 # Reset the kernel
 get_ipython().magic('reset -f')      # analysis:ignore
 
-#%%
-
 import glob
 import json
 import os
@@ -24,7 +22,7 @@ from utils import LOCATION, compute_global_utility_activation_value
 #==============================================================================
 # Simulation parameters and values
 #==============================================================================
-main_parameter = 'adopters_threshold'
+main_parameter = 'social_influence'
 parameter_values = [0.1, 0.5, 0.7, 0.9]
 number_of_times = 50
 max_time = 60
@@ -34,16 +32,30 @@ parameters = dict(
     randomness = 0.01,
     number_of_neighbors = 15,
     initial_seed = 0.001,
-    adopters_threshold = 0.8,
+    adopters_threshold = 0.4,
     social_influence = 0.7,
     quality = 0.5,
     number_of_consumers = 3000,
-    activation_sharpness = 90,
+    activation_sharpness = 70,
     critical_mass = 0.50,
     marketing_effort = 0,
     level = 1
 )
 
+
+#==============================================================================
+# Mapping of parameter names to the names in our article
+#==============================================================================
+article_parameters = dict(
+    randomness = 'r',
+    number_of_neighbors = 'k',
+    adopters_threshold = 'h',
+    social_influence = r'\beta',
+    quality = 'q',
+    number_of_consumers = 'N',
+    activation_sharpness = r'\phi',
+    critical_mass = 'M_c',
+)
 
 #==============================================================================
 # Save parameters in a "Results" directory, placed next to this file
@@ -57,7 +69,7 @@ if not osp.isdir(RESULTS_DIR):
 # Create file name to save parameters
 # It's going to be of the form main_parameter_#.txt
 name = osp.join(RESULTS_DIR, main_parameter + '_')
-number = len(glob.glob(name + '*'))
+number = len(glob.glob(name + '*.txt'))
 filename = name + str(number) + '.txt'
 
 # Save the run parameters in a dict
@@ -117,11 +129,11 @@ for p in set_of_parameters:
 #==============================================================================
 # Plotting
 #==============================================================================
-#%%
+
 fig_filename = osp.splitext(filename)[0] + '.png'
 
 multiplot_adopters_and_global_utility(data=data,
-                                      par_name='h',
+                                      par_name=article_parameters[main_parameter],
                                       par_values=parameter_values,
                                       activation_value=activation_value,
                                       cumulative=True,
