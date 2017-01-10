@@ -112,7 +112,8 @@ def multiplot_adopters(data, par_name, par_values, cumulative, filename):
     f.savefig(filename, dpi=f.dpi)
 
 
-def multiplot_adopters_and_global_utility(data, par_name, par_values,
+def multiplot_adopters_and_global_utility(data, parameters,
+                                          par_name, par_values,
                                           activation_value, cumulative,
                                           filename, max_time):
     """
@@ -155,9 +156,15 @@ def multiplot_adopters_and_global_utility(data, par_name, par_values,
         ax_top = plt.Subplot(fig, inner_grid[0])
         ax_adopters = plt.Subplot(fig, inner_grid[1])
 
-        # Set ylim for adopters plot
-        if i > 0:
-            ax_adopters.set_ylim(top=top_ylim)
+        # Set ylim for adopters
+        if cumulative:
+            ax_adopters.set_ylim(top=parameters['number_of_consumers'])
+        else:
+            if i > 0:
+                ax_adopters.set_ylim(top=top_ylim)
+
+        # Set ylim for global utility
+        ax_top.set_ylim(top=1)
 
         # Set tick marks per plot
         if i == 0 or i == 1:
@@ -182,7 +189,7 @@ def multiplot_adopters_and_global_utility(data, par_name, par_values,
 
         # Save top ylim of the first plot to use it for the
         # rest
-        if i == 0:
+        if i == 0 and not cumulative:
             top_ylim = ax_adopters.get_ylim()[1]
 
     fig.savefig(filename, dpi=fig.dpi)
