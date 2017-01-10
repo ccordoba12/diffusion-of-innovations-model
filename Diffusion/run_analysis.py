@@ -94,16 +94,18 @@ with open(filename, 'w') as f:
 #==============================================================================
 # Main variables
 #==============================================================================
+# Global utility activation value
+activation_value = compute_global_utility_activation_value(parameters)
+
 # Remove the parameter we want to study
 parameters.pop(main_parameter)
 
 # Direct view to the IPyparallel engines
-rc = Client()
-dview = rc[:]
-
-# Global utility activation value
-activation_value = compute_global_utility_activation_value(parameters)
-
+try:
+    rc = Client()
+    dview = rc[:]
+except:
+    dview = None
 
 #==============================================================================
 # Simulation
