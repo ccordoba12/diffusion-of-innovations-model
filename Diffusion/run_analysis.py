@@ -4,9 +4,6 @@
 Run a complete analysis for a give parameter
 """
 
-# Reset the kernel
-get_ipython().magic('reset -f')      # analysis:ignore
-
 import glob
 import json
 import os
@@ -135,7 +132,7 @@ for p in set_of_parameters:
 
 fig_filename = osp.splitext(filename)[0] + '.png'
 
-multiplot_adopters_and_global_utility(data=data,
+multiplot_adopters_and_global_utility(data=data, parameters=parameters,
                                       par_name=article_parameters[main_parameter],
                                       par_values=parameter_values,
                                       activation_value=activation_value,
