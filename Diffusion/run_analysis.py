@@ -13,17 +13,17 @@ from ipyparallel import Client
 
 from algorithm import compute_run, generate_parameters
 from plots import multiplot_adopters_and_global_utility
-from utils import LOCATION, compute_global_utility_activation_value
+from utils import LOCATION
 
 
 #==============================================================================
 # Simulation parameters and values
 #==============================================================================
-number_of_times = 50
-parameter_values = [0.1, 0.4, 0.7, 0.9]
+number_of_times = 70
+parameter_values = [5, 10, 15, 20]
 cumulative = True
-main_parameter = 'social_influence'
-max_time = 160
+main_parameter = 'activation_sharpness'
+max_time = 180
 
 
 # Parameters
@@ -36,7 +36,7 @@ parameters = dict(
     quality = 0.5,
     initial_seed = 0.001,
     critical_mass = 0.5,
-    number_of_neighbors = 10,
+    number_of_neighbors = 8,
     adopters_threshold = 0.5,
     marketing_effort = 0,
 )
@@ -55,6 +55,7 @@ article_parameters = dict(
     activation_sharpness = r'\phi',
     critical_mass = 'M_c',
 )
+
 
 #==============================================================================
 # Save parameters in a "Results" directory, placed next to this file
@@ -94,9 +95,6 @@ with open(filename, 'w') as f:
 #==============================================================================
 # Main variables
 #==============================================================================
-# Global utility activation value
-activation_value = compute_global_utility_activation_value(parameters)
-
 # Remove the parameter we want to study
 parameters.pop(main_parameter)
 
@@ -134,10 +132,10 @@ for p in set_of_parameters:
 
 fig_filename = osp.splitext(filename)[0] + '.png'
 
-multiplot_adopters_and_global_utility(data=data, parameters=parameters,
+multiplot_adopters_and_global_utility(data=data,
+                                      set_of_params=set_of_parameters,
                                       par_name=article_parameters[main_parameter],
                                       par_values=parameter_values,
-                                      activation_value=activation_value,
                                       cumulative=cumulative,
                                       filename=fig_filename,
                                       max_time=max_time)
