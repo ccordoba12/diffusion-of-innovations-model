@@ -14,6 +14,8 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import seaborn as sns
 
+from utils import compute_global_utility_activation_value
+
 
 if not os.name == 'nt':
     matplotlib.rc('text', usetex=True)
@@ -112,14 +114,15 @@ def multiplot_adopters(data, par_name, par_values, cumulative, filename):
     f.savefig(filename, dpi=f.dpi)
 
 
-def multiplot_adopters_and_global_utility(data, parameters,
+def multiplot_adopters_and_global_utility(data, set_of_params,
                                           par_name, par_values,
-                                          activation_value, cumulative,
-                                          filename, max_time):
+                                          cumulative, filename,
+                                          max_time):
     """
     Plot adopters and global utility in the same graph.
 
     data: data of compute_run.
+    set_of_params: Set of parameters
     par_name: Name of the main parameter that we are varying in the simulation.
     par_values: List of values for the main parameter.
                 It can only contain 4 values.
@@ -149,7 +152,7 @@ def multiplot_adopters_and_global_utility(data, parameters,
     # (This is here to avoid linting complaints)
     top_ylim = 0
 
-    for i, d, v in zip(range(4), data, par_values):
+    for i, d, v, p in zip(range(4), data, par_values, set_of_params):
         inner_grid = gridspec.GridSpecFromSubplotSpec(2, 1, subplot_spec=outer_grid[i],
                                                       height_ratios=[1, 2.6],
                                                       hspace=0.02)
@@ -158,7 +161,9 @@ def multiplot_adopters_and_global_utility(data, parameters,
 
         # Set ylim for adopters
         if cumulative:
-            ax_adopters.set_ylim(top=parameters['number_of_consumers'])
+            max_consumers = max([parameters['number_of_consumers']
+                                for parameters in set_of_params])
+            ax_adopters.set_ylim(top=max_consumers)
         else:
             if i > 0:
                 ax_adopters.set_ylim(top=top_ylim)
@@ -171,6 +176,9 @@ def multiplot_adopters_and_global_utility(data, parameters,
             plt.setp(ax_adopters.get_xticklabels(), visible=False)
         if i == 1 or i == 3:
             plt.setp(ax_adopters.get_yticklabels(), visible=False)
+
+        # Global utility activation value
+        activation_value = compute_global_utility_activation_value(p)
 
         fig.add_subplot(ax_adopters)
         fig.add_subplot(ax_top, sharex=ax_adopters)
