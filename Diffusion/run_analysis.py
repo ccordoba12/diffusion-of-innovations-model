@@ -4,10 +4,13 @@
 Run a complete analysis for a give parameter
 """
 
+import atexit
 import glob
 import json
 import os
 import os.path as osp
+import time
+import subprocess
 
 from ipyparallel import Client
 
@@ -98,12 +101,19 @@ with open(filename, 'w') as f:
 # Remove the parameter we want to study
 parameters.pop(main_parameter)
 
-# Direct view to the IPyparallel engines
+# Start IPyparallel cluster
 try:
     rc = Client()
     dview = rc[:]
 except:
-    dview = None
+    try:
+        proc = subprocess.Popen(["ipcluster", "start", "-n", "8"])
+        atexit.register(proc.terminate)
+        time.sleep(20)
+        rc = Client()
+        dview = rc[:]
+    except:
+        dview = None
 
 #==============================================================================
 # Simulation
