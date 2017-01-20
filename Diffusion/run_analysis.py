@@ -123,7 +123,8 @@ set_of_parameters = generate_parameters(parameters, main_parameter,
                                         parameter_values)
 
 # Reset the engines
-get_ipython().magic('px %reset -f')  # analysis:ignore
+if dview is not None:
+    get_ipython().magic('px %reset -f')  # analysis:ignore
 
 # Run the simulation
 data = []
