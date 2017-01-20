@@ -20,16 +20,18 @@ from utils import LOCATION
 
 
 #==============================================================================
-# Simulation parameters and values
-#==============================================================================
-number_of_times = 70
-parameter_values = [5, 10, 15, 20]
-cumulative = True
-main_parameter = 'activation_sharpness'
-max_time = 180
-
-
 # Parameters
+#==============================================================================
+# Parameters to run the analysis
+run = dict(
+    number_of_times = 70,
+    parameter_values = [0.4, 0.5, 0.6, 0.7],
+    cumulative = True,
+    main_parameter = 'quality',
+    max_time = 160
+)
+
+# Parameters for the model
 parameters = dict(
     number_of_consumers = 1000,
     social_influence = 0.7,
@@ -71,18 +73,9 @@ if not osp.isdir(RESULTS_DIR):
 
 # Create file name to save parameters
 # It's going to be of the form main_parameter_#.txt
-name = osp.join(RESULTS_DIR, main_parameter + '_')
+name = osp.join(RESULTS_DIR, run['main_parameter'] + '_')
 number = len(glob.glob(name + '*.txt'))
 filename = name + str(number) + '.txt'
-
-# Save the run parameters in a dict
-run = dict(
-    main_parameter=main_parameter,
-    parameter_values=parameter_values,
-    number_of_times=number_of_times,
-    max_time=max_time,
-    cumulative=cumulative
-)
 
 # Create a dict with all the needed paramaters
 all_parameters = dict(
@@ -99,7 +92,7 @@ with open(filename, 'w') as f:
 # Main variables
 #==============================================================================
 # Remove the parameter we want to study
-parameters.pop(main_parameter)
+parameters.pop(run['main_parameter'])
 
 # Start IPyparallel cluster
 try:
@@ -119,8 +112,9 @@ except:
 # Simulation
 #==============================================================================
 # Generating different sets of parameters
-set_of_parameters = generate_parameters(parameters, main_parameter,
-                                        parameter_values)
+set_of_parameters = generate_parameters(parameters,
+                                        run['main_parameter'],
+                                        run['parameter_values'])
 
 # Reset the engines
 if dview is not None:
@@ -130,9 +124,9 @@ if dview is not None:
 data = []
 for p in set_of_parameters:
     print(len(data))
-    p_data = compute_run(number_of_times=number_of_times,
+    p_data = compute_run(number_of_times=run['number_of_times'],
                          parameters=p,
-                         max_time=max_time,
+                         max_time=run['max_time'],
                          dview=dview)
     data.append(p_data)
 
@@ -143,10 +137,11 @@ for p in set_of_parameters:
 
 fig_filename = osp.splitext(filename)[0] + '.png'
 
-multiplot_adopters_and_global_utility(data=data,
-                                      set_of_params=set_of_parameters,
-                                      par_name=article_parameters[main_parameter],
-                                      par_values=parameter_values,
-                                      cumulative=cumulative,
-                                      filename=fig_filename,
-                                      max_time=max_time)
+multiplot_adopters_and_global_utility(
+    data=data,
+    set_of_params=set_of_parameters,
+    par_name=article_parameters[run['main_parameter']],
+    par_values=run['parameter_values'],
+    cumulative=run['cumulative'],
+    filename=fig_filename,
+    max_time=run['max_time'])
