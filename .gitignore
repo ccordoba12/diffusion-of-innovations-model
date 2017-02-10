@@ -4,5 +4,6 @@
 # Compiled python files
 *.py[oc]
 
-# Results directory
+# Results directory and png
 *Results*
+*.png
