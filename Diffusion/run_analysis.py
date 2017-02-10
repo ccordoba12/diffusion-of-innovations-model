@@ -16,7 +16,7 @@ from ipyparallel import Client
 
 from algorithm import compute_run, generate_parameters
 from plots import multiplot_adopters_and_global_utility
-from utils import LOCATION
+from utils import LOCATION, load_parameters_from_file
 
 
 #==============================================================================
@@ -46,6 +46,33 @@ parameters = dict(
     marketing_effort = 0,
 )
 
+# Load parameters from a file in SAVED_RESULTS_DIR.
+# Notes:
+# 1. This overrides the parameters set above
+# 2. Set this variable to '' to not load any
+#    file.
+PARAMETERS_FILE = 'social_influence_60.txt'
+
+
+#==============================================================================
+# Main constants
+#==============================================================================
+RESULTS_DIR = osp.join(LOCATION, 'Results')
+SAVED_RESULTS_DIR = osp.join(LOCATION, 'Saved')
+
+
+#==============================================================================
+# Load parameters from a file to re-run a previous analysis
+#==============================================================================
+if PARAMETERS_FILE:
+    f = osp.join(SAVED_RESULTS_DIR, PARAMETERS_FILE)
+    if osp.isfile(f):
+        all_parameters = load_parameters_from_file(f)
+        run = all_parameters['run']
+        parameters = all_parameters['parameters']
+    else:
+        raise Exception('{} does not exist'.format(f))
+
 
 #==============================================================================
 # Mapping of parameter names to the names in our article
@@ -65,9 +92,7 @@ article_parameters = dict(
 #==============================================================================
 # Save parameters in a "Results" directory, placed next to this file
 #==============================================================================
-RESULTS_DIR = osp.join(LOCATION, 'Results')
-
-# Create the directory
+# Create the results directory
 if not osp.isdir(RESULTS_DIR):
     os.makedirs(RESULTS_DIR)
 
@@ -108,6 +133,7 @@ except:
     except:
         dview = None
 
+
 #==============================================================================
 # Simulation
 #==============================================================================
@@ -134,7 +160,6 @@ for p in set_of_parameters:
 #==============================================================================
 # Plotting
 #==============================================================================
-
 fig_filename = osp.splitext(filename)[0] + '.png'
 
 multiplot_adopters_and_global_utility(
