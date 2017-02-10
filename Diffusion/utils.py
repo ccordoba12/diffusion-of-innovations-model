@@ -6,6 +6,7 @@ Utility functions for the algorithm
 
 from __future__ import division
 
+import json
 import os.path as osp
 import random
 
@@ -168,3 +169,10 @@ def compute_global_utility_activation_value(parameters):
                                      parameters['critical_mass'])
         if reflexivity_index > 0.005:
             return global_utility
+
+
+def load_parameters_from_file(param_file):
+    """Load parameters of run_analysis.py saved as json files."""
+    with open(param_file, 'r') as f:
+        parameters = json.loads(f.read())
+    return parameters
