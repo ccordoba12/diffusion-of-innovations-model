@@ -59,6 +59,7 @@ PARAMETERS_FILE = 'social_influence_60.txt'
 #==============================================================================
 RESULTS_DIR = osp.join(LOCATION, 'Results')
 SAVED_RESULTS_DIR = osp.join(LOCATION, 'Saved')
+RERUNS_DIR = osp.join(RESULTS_DIR, 'Reruns')
 
 
 #==============================================================================
@@ -96,21 +97,26 @@ article_parameters = dict(
 if not osp.isdir(RESULTS_DIR):
     os.makedirs(RESULTS_DIR)
 
+# Create the reruns directory
+if not osp.isdir(RERUNS_DIR):
+    os.makedirs(RERUNS_DIR)
+
 # Create file name to save parameters
 # It's going to be of the form main_parameter_#.txt
-name = osp.join(RESULTS_DIR, run['main_parameter'] + '_')
-number = len(glob.glob(name + '*.txt'))
-filename = name + str(number) + '.txt'
+if not PARAMETERS_FILE:
+    name = osp.join(RESULTS_DIR, run['main_parameter'] + '_')
+    number = len(glob.glob(name + '*.txt'))
+    filename = name + str(number) + '.txt'
 
-# Create a dict with all the needed paramaters
-all_parameters = dict(
-    run=run,
-    parameters=parameters
-)
+    # Create a dict with all the needed paramaters
+    all_parameters = dict(
+        run=run,
+        parameters=parameters
+    )
 
-# Save all parameters
-with open(filename, 'w') as f:
-    json.dump(all_parameters, f, indent=4)
+    # Save all parameters
+    with open(filename, 'w') as f:
+        json.dump(all_parameters, f, indent=4)
 
 
 #==============================================================================
@@ -160,8 +166,15 @@ for p in set_of_parameters:
 #==============================================================================
 # Plotting
 #==============================================================================
-fig_filename = osp.splitext(filename)[0] + '.png'
+# File to save the fig
+if PARAMETERS_FILE:
+    fig_filename = osp.splitext(PARAMETERS_FILE)[0] + '.png'
+    fig_filename = osp.join(RERUNS_DIR, osp.basename(fig_filename))
+else:
+    fig_filename = osp.splitext(filename)[0] + '.png'
 
+
+# Generate plot
 multiplot_adopters_and_global_utility(
     data=data,
     set_of_params=set_of_parameters,
