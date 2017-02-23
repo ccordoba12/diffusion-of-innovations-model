@@ -7,6 +7,18 @@ Parameters for the simulation
 #==============================================================================
 # Parameters to run the analysis
 #==============================================================================
+# Note: The order here is exactly the same as the one in which these
+#       parameters are saved to disk. So this way it's easier to
+#       visually compare the values here with those of our json files.
+#
+# - number_of_times: Number of times we repeat the run with a
+#                    given parameter value
+# - parameter_values: Values for the parameter we want to study.
+#                     We accept only *four* parameters here.
+# - cumulative: Wheter to plot cumulative curves or not.
+# - main_parameter: Main parameter that simulation is going to be
+#                   run for
+# - max_time: Maximum time until the simulation is stop.
 run = dict(
     number_of_times = 70,
     parameter_values = [0.4, 0.5, 0.6, 0.7],
@@ -19,6 +31,8 @@ run = dict(
 #==============================================================================
 # Parameters for the model
 #==============================================================================
+# Please see the README and our article for an explatation of these
+# parameters
 parameters = dict(
     number_of_consumers = 1000,
     social_influence = 0.7,
@@ -39,6 +53,7 @@ parameters = dict(
 #==============================================================================
 # Notes:
 # 1. This overrides the parameters set above
-# 2. Set this variable to '' to not load any
-#    file.
+# 2. Set this variable to '' to not load any file.
+# 3. It's assumed that these file are saved in a
+#    *Saved* subdirectory inside this directory.
 PARAMETERS_FILE = 'social_influence_60.txt'
