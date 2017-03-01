@@ -138,8 +138,10 @@ for p in set_of_parameters:
 #==============================================================================
 # File to save the fig
 if PARAMETERS_FILE:
-    fig_filename = osp.splitext(PARAMETERS_FILE)[0] + '.png'
-    fig_filename = osp.join(RERUNS_DIR, osp.basename(fig_filename))
+    name = osp.splitext(PARAMETERS_FILE)[0] + '_'
+    number = len(glob.glob(osp.join(RERUNS_DIR, name) + '*.png'))
+    filename = name + str(number) + '.png'
+    fig_filename = osp.join(RERUNS_DIR, filename)
 else:
     fig_filename = osp.splitext(filename)[0] + '.png'
 
