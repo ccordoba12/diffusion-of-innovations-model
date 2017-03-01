@@ -4,6 +4,23 @@
 Parameters for the simulation
 """
 
+import os.path as osp
+
+from utils import LOCATION
+
+#==============================================================================
+# Directories to save results
+#==============================================================================
+# Directory to save initial runs
+RESULTS_DIR = osp.join(LOCATION, 'Results')
+
+# Directory to save the result of re-runs
+RERUNS_DIR = osp.join(RESULTS_DIR, 'Reruns')
+
+# Directory to save parameter files with interesting findings
+SAVED_RESULTS_DIR = osp.join(LOCATION, 'Saved')
+
+
 #==============================================================================
 # Parameters to run the analysis
 #==============================================================================
@@ -49,11 +66,12 @@ parameters = dict(
 
 
 #==============================================================================
-# Load parameters from a file in SAVED_RESULTS_DIR.
+# Load parameters from a file.
 #==============================================================================
 # Notes:
 # 1. This overrides the parameters set above
 # 2. Set this variable to '' to not load any file.
-# 3. It's assumed that these file are saved in a
-#    *Saved* subdirectory inside this directory.
+# 3. These file are saved in a SAVED_RESULTS_DIR.
+# 4. The results are of these re-runs are saved in
+#    RERUNS_DIR.
 PARAMETERS_FILE = 'social_influence_60.txt'

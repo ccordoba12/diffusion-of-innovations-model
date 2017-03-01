@@ -16,16 +16,9 @@ from ipyparallel import Client
 
 from algorithm import compute_run, generate_parameters
 from plots import multiplot_adopters_and_global_utility
-from all_parameters import PARAMETERS_FILE
-from utils import LOCATION, load_parameters_from_file
-
-
-#==============================================================================
-# Main constants
-#==============================================================================
-RESULTS_DIR = osp.join(LOCATION, 'Results')
-SAVED_RESULTS_DIR = osp.join(LOCATION, 'Saved')
-RERUNS_DIR = osp.join(RESULTS_DIR, 'Reruns')
+from all_parameters import (PARAMETERS_FILE, RESULTS_DIR, RERUNS_DIR,
+                            SAVED_RESULTS_DIR)
+from utils import load_parameters_from_file
 
 
 #==============================================================================
