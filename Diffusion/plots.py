@@ -58,7 +58,7 @@ def plot_adopters(data, par_name, par_value, axis=None, cumulative=False,
         plt.tick_params(axis='both', which='major', labelsize=fontsize-2)
 
 
-def plot_global_utility(data, axis, activation_value, max_time):
+def plot_global_utility(data, axis, activation_value, max_time, fontsize):
     """
     Plot global utility against time.
 
@@ -70,16 +70,13 @@ def plot_global_utility(data, axis, activation_value, max_time):
     """
     rx_data = [d['global_utility'] for d in data['rx']]
 
-    axis.yaxis.grid(False)
-    axis.set_ylabel('$U_G$')
+    axis.set_ylabel('$U_G$', fontsize=fontsize)
 
     plt.setp(axis.get_xticklabels(), visible=False)
-    plt.setp(axis.get_yticklabels(), visible=False)
-    plt.setp(axis.yaxis.get_majorticklines(), visible=False)
-    plt.setp(axis.yaxis.get_minorticklines(), visible=False)
 
     sns.tsplot(data=rx_data, color=sns.xkcd_rgb["medium green"], ax=axis)
-    plt.plot([activation_value] * max_time, '--', linewidth=1, color='0.5')
+    plt.plot([activation_value] * max_time, '--', linewidth=1, color='0.4')
+    axis.tick_params(labelsize=fontsize-2)
 
 
 def multiplot_adopters(data, par_name, par_values, cumulative, filename):
@@ -146,7 +143,7 @@ def multiplot_adopters_and_global_utility(data, set_of_params,
     fig = plt.figure(figsize=figsize)
 
     # Grid of 2x2 plots
-    outer_grid = gridspec.GridSpec(2, 2, hspace=0.15)
+    outer_grid = gridspec.GridSpec(2, 2, hspace=0.18)
 
     # Default value for adopters top_ylim plots
     # (This is here to avoid linting complaints)
@@ -154,8 +151,8 @@ def multiplot_adopters_and_global_utility(data, set_of_params,
 
     for i, d, v, p in zip(range(4), data, par_values, set_of_params):
         inner_grid = gridspec.GridSpecFromSubplotSpec(2, 1, subplot_spec=outer_grid[i],
-                                                      height_ratios=[1, 2.6],
-                                                      hspace=0.02)
+                                                      height_ratios=[1, 2.8],
+                                                      hspace=0.15)
         ax_top = plt.Subplot(fig, inner_grid[0])
         ax_adopters = plt.Subplot(fig, inner_grid[1])
 
@@ -168,14 +165,16 @@ def multiplot_adopters_and_global_utility(data, set_of_params,
             if i > 0:
                 ax_adopters.set_ylim(top=top_ylim)
 
-        # Set ylim for global utility
+        # Set ylim and yticks for top axis
         ax_top.set_ylim(top=1)
+        ax_top.set_yticks([0, 0.5, 1])
 
         # Set tick marks per plot
         if i == 0 or i == 1:
             plt.setp(ax_adopters.get_xticklabels(), visible=False)
         if i == 1 or i == 3:
             plt.setp(ax_adopters.get_yticklabels(), visible=False)
+            plt.setp(ax_top.get_yticklabels(), visible=False)
 
         # Global utility activation value
         activation_value = compute_global_utility_activation_value(p)
@@ -193,7 +192,8 @@ def multiplot_adopters_and_global_utility(data, set_of_params,
         plot_global_utility(data=d,
                             axis=ax_top,
                             activation_value=activation_value,
-                            max_time=max_time)
+                            max_time=max_time,
+                            fontsize=fontsize)
 
         # Save top ylim of the first plot to use it for the
         # rest
