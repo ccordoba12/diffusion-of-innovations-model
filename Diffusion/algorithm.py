@@ -35,7 +35,7 @@ def generate_initial_conditions(parameters):
         node = G.node[node_index]
         node['adopter'] = 0                      # 1 is adopter, 0 non-adopter
         node['preference'] = np.random.random()  # pi
-        #node['minimal_utility'] = np.random.random()
+        node['minimal_utility'] = np.random.random() # Umin,i
         
         # Neighbors never change if the level is an int
         if int(parameters['level']) - parameters['level'] == 0:
@@ -146,17 +146,16 @@ def evolution_step(graph, parameters, test=False):
                 utility = local_utility
         else:
             utility = local_utility
-        
+
         # Decide to adopt if agent's utility is higher than a minimal
         # utility
-        minimal_utility = np.random.random()
-        if minimal_utility <= utility:
-            adopters_at_step.append(node_index)
-        
-        # print(utility)
-        #if utility > node['minimal_utility']: #minimal_utility:
-        #    if np.random.random() > node['minimal_utility']:
-        #        node['adopter'] = 1
+
+        #minimal_utility = np.random.random()
+        #if minimal_utility <= utility:
+        #    adopters_at_step.append(node_index)
+
+        if utility >= node['minimal_utility']:
+            node['adopter'] = 1
     
     # Update the graph with customers who adopted in this time step
     for node_index in adopters_at_step:
