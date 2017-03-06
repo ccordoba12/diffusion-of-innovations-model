@@ -200,4 +200,4 @@ def multiplot_adopters_and_global_utility(data, set_of_params,
         if i == 0 and not cumulative:
             top_ylim = ax_adopters.get_ylim()[1]
 
-    fig.savefig(filename, dpi=fig.dpi, bbox_inches='tight')
+    fig.savefig(filename, dpi=300, bbox_inches='tight')
