@@ -152,7 +152,7 @@ def multiplot_adopters_and_global_utility(data, set_of_params,
     for i, d, v, p in zip(range(4), data, par_values, set_of_params):
         inner_grid = gridspec.GridSpecFromSubplotSpec(2, 1, subplot_spec=outer_grid[i],
                                                       height_ratios=[1, 2.8],
-                                                      hspace=0.15)
+                                                      hspace=0.08)
         ax_top = plt.Subplot(fig, inner_grid[0])
         ax_adopters = plt.Subplot(fig, inner_grid[1])
 
@@ -174,6 +174,7 @@ def multiplot_adopters_and_global_utility(data, set_of_params,
             plt.setp(ax_adopters.get_xticklabels(), visible=False)
         if i == 1 or i == 3:
             plt.setp(ax_adopters.get_yticklabels(), visible=False)
+        if i == 0 or i == 2:
             plt.setp(ax_top.get_yticklabels(), visible=False)
 
         # Global utility activation value
@@ -194,6 +195,11 @@ def multiplot_adopters_and_global_utility(data, set_of_params,
                             activation_value=activation_value,
                             max_time=max_time,
                             fontsize=fontsize)
+
+        # Adjustments to top plots
+        if i == 1 or i == 3:
+            ax_top.set_ylabel('')
+            ax_top.tick_params(pad=15)
 
         # Save top ylim of the first plot to use it for the
         # rest
