@@ -41,6 +41,6 @@ at any time).
 
 1. Set model parameters for a given run in `all_parameters.py`.
 2. Run `run_analysis.py`
-3. The result is a plot and a .txt file with the parameters of
+3. The result is a plot and a json file with the parameters of
    simulation. Both are saved in a *Results* subdirectory in this
    same directory.

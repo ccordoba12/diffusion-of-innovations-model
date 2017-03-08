@@ -65,11 +65,11 @@ if not osp.isdir(RERUNS_DIR):
     os.makedirs(RERUNS_DIR)
 
 # Create file name to save parameters
-# It's going to be of the form main_parameter_#.txt
+# It's going to be of the form main_parameter_#.json
 if not PARAMETERS_FILE:
     name = osp.join(RESULTS_DIR, run['main_parameter'] + '_')
-    number = len(glob.glob(name + '*.txt'))
-    filename = name + str(number) + '.txt'
+    number = len(glob.glob(name + '*.json'))
+    filename = name + str(number) + '.json'
 
     # Create a dict with all the needed paramaters
     all_parameters = dict(
