@@ -13,6 +13,7 @@ import time
 import subprocess
 
 from ipyparallel import Client
+from IPython.core.getipython import get_ipython
 
 from algorithm import compute_run, generate_parameters
 from plots import multiplot_adopters_and_global_utility
@@ -113,7 +114,9 @@ set_of_parameters = generate_parameters(parameters,
 
 # Reset the engines
 if dview is not None:
-    get_ipython().magic('px %reset -f')  # analysis:ignore
+    get_ipython().magic('px %reset -f')
+    get_ipython().magic('px %reload_ext autoreload')
+    get_ipython().magic('px %autoreload 2')
 
 # Run the simulation
 data = []
@@ -147,4 +150,5 @@ multiplot_adopters_and_global_utility(
     par_values=run['parameter_values'],
     cumulative=run['cumulative'],
     filename=fig_filename,
-    max_time=run['max_time'])
+    max_time=run['max_time']
+)
