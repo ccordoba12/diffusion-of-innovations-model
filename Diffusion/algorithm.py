@@ -95,13 +95,6 @@ def evolution_step(graph, parameters, test=False):
     for node_index in graph.nodes():
         node = graph.node[node_index]
 
-        # -- Adoption due to marketing
-        if parameters['marketing_effort']:
-            p = np.random.random()
-            if not node['adopter'] and (p < parameters['marketing_effort']):
-                adopters_at_step.append(node_index)
-                continue
-
         # -- Compute utility due to local influence
         # Adopters
         if node['neighbors']:
@@ -147,16 +140,17 @@ def evolution_step(graph, parameters, test=False):
         else:
             utility = local_utility
 
-        # Decide to adopt if agent's utility is higher than a minimal
-        # utility
-
-        #minimal_utility = np.random.random()
-        #if minimal_utility <= utility:
-        #    adopters_at_step.append(node_index)
-
+        # -- Decide to adopt if
+        # Agent's utility is higher than a minimal utility
         if utility >= node['minimal_utility']:
-            node['adopter'] = 1
-    
+            adopters_at_step.append(node_index)
+        # or marketing influences the agent
+        elif parameters['marketing_effort'] and \
+          len(adopters_among_neighbors) > 0:
+            prob_adoption = np.random.random()
+            if prob_adoption < parameters['marketing_effort']:
+                adopters_at_step.append(node_index)
+
     # Update the graph with customers who adopted in this time step
     for node_index in adopters_at_step:
         node = graph.node[node_index]
