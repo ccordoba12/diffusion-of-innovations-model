@@ -36,6 +36,7 @@ def generate_initial_conditions(parameters):
         node['adopter'] = 0                      # 1 is adopter, 0 non-adopter
         node['preference'] = np.random.random()  # pi
         node['minimal_utility'] = np.random.random() # Umin,i
+        node['reflexivity'] = np.random.random() # \alpha_{i}
         
         # Neighbors never change if the level is an int
         if int(parameters['level']) - parameters['level'] == 0:
@@ -138,8 +139,7 @@ def evolution_step(graph, parameters, test=False):
         if parameters['reflexivity']:
             # Compute utility if agent has become aware of a global pattern
             # or not
-            alpha = np.random.random()
-            if alpha < reflexivity_index:
+            if node['reflexivity'] < reflexivity_index:
                 utility = local_utility + global_utility - \
                           local_utility * global_utility
             else:
