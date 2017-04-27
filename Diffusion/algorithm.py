@@ -63,12 +63,7 @@ def evolution_step(graph, parameters, test=False):
 
     Returns: The number of adopters in a given time step.
     """
-    
-    #minimal_utility = parameters['minimal_utility']
-    
-    # Adopters before performing the current step
-    previous_adopters = get_adopters(graph)
-    
+
     # To save the adopters at this time step
     adopters_at_step = []
     
@@ -94,6 +89,11 @@ def evolution_step(graph, parameters, test=False):
     # Determine which agents adopt
     for node_index in graph.nodes():
         node = graph.node[node_index]
+
+        # Continue to next node if the current one is
+        # already an adopter
+        if node['adopter'] == 1:
+            continue
 
         # -- Compute utility due to local influence
         # Adopters
@@ -157,8 +157,7 @@ def evolution_step(graph, parameters, test=False):
         node['adopter'] = 1
     
     # Return number of adopters at this step
-    current_adopters = get_adopters(graph)
-    return len(current_adopters) - len(previous_adopters)
+    return len(adopters_at_step)
 
 
 def evolution(graph, parameters, max_time, test=False):
