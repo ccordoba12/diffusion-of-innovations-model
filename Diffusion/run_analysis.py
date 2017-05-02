@@ -144,7 +144,7 @@ else:
 
 # Generate plot
 multiplot_adopters_and_global_utility(
-    data=data,
+    multiple_data=data,
     set_of_params=set_of_parameters,
     par_name=article_parameters[run['main_parameter']],
     par_values=run['parameter_values'],

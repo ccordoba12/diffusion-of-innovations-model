@@ -14,7 +14,8 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import seaborn as sns
 
-from utils import compute_global_utility_activation_value
+from utils import (compute_global_utility_activation_value,
+                   get_values_from_compute_run)
 
 
 if not os.name == 'nt':
@@ -35,8 +36,10 @@ def plot_adopters(data, par_name, par_value, axis=None, cumulative=False,
     cumulative: Whether to plot the cumulative number of adopters or not
     fontsize: Font size for legends and tick marks.
     """
-    no_rx_data = [d['adopters'] for d in data['no_rx']]
-    rx_data = [d['adopters'] for d in data['rx']]
+    no_rx_data = get_values_from_compute_run(data, with_reflexivity=False,
+                                             variable='adopters')
+    rx_data = get_values_from_compute_run(data, with_reflexivity=True,
+                                          variable='adopters')
 
     if cumulative:
         no_rx_data = map(np.cumsum, no_rx_data)
@@ -68,13 +71,14 @@ def plot_global_utility(data, axis, activation_value, max_time, fontsize):
                       reflexivity index is greater than zero.
     max_time: Max simulation time.
     """
-    rx_data = [d['global_utility'] for d in data['rx']]
+    Ug_data = get_values_from_compute_run(data, with_reflexivity=True,
+                                          variable='global_utility')
 
     axis.set_ylabel('$U_G$', fontsize=fontsize)
 
     plt.setp(axis.get_xticklabels(), visible=False)
 
-    sns.tsplot(data=rx_data, color=sns.xkcd_rgb["medium green"], ax=axis)
+    sns.tsplot(data=Ug_data, color=sns.xkcd_rgb["medium green"], ax=axis)
     plt.plot([activation_value] * max_time, '--', linewidth=1, color='0.4')
     axis.tick_params(labelsize=fontsize-2)
 
@@ -111,16 +115,18 @@ def multiplot_adopters(data, par_name, par_values, cumulative, filename):
     f.savefig(filename, dpi=f.dpi)
 
 
-def multiplot_adopters_and_global_utility(data, set_of_params,
+def multiplot_adopters_and_global_utility(multiple_data, set_of_params,
                                           par_name, par_values,
                                           cumulative, filename,
                                           max_time):
     """
     Plot adopters and global utility in the same graph.
 
-    data: data of compute_run.
+    multiple_data: List of data obtained by running compute_run
+                   over each entry of set_of_params.
     set_of_params: Set of parameters
-    par_name: Name of the main parameter that we are varying in the simulation.
+    par_name: Name of the main parameter that we are varying in
+              the simulation.
     par_values: List of values for the main parameter.
                 It can only contain 4 values.
     activation_value: Global utility activation value.
@@ -149,7 +155,7 @@ def multiplot_adopters_and_global_utility(data, set_of_params,
     # (This is here to avoid linting complaints)
     top_ylim = 0
 
-    for i, d, v, p in zip(range(4), data, par_values, set_of_params):
+    for i, d, v, p in zip(range(4), multiple_data, par_values, set_of_params):
         inner_grid = gridspec.GridSpecFromSubplotSpec(2, 1, subplot_spec=outer_grid[i],
                                                       height_ratios=[1, 2.8],
                                                       hspace=0.08)

@@ -9,10 +9,11 @@ from __future__ import division
 # Third-party imports
 import networkx as nx
 import numpy as np
+import pandas as pd
 
 # Local imports
-from utils import (compute_global_utility, get_adopters, get_neighbors,
-                   is_adopter, logistic, set_seed, step)
+from utils import (compute_global_utility, get_neighbors, is_adopter, logistic,
+                   set_seed, step)
 
 
 def generate_initial_conditions(parameters):
@@ -61,11 +62,16 @@ def evolution_step(graph, parameters, test=False):
     test: Test with a step function instead of the logistic one for
     the reflexivity_index.
 
-    Returns: The number of adopters in a given time step.
+    Returns: A dictionary with data collected at each step (e.g.
+             total number of adopters, adopters by utility and
+             marketing, etc.)
     """
 
     # To save the adopters at this time step
     adopters_at_step = []
+    adopters_by_utility = 0
+    adopters_by_marketing = 0
+    global_utility = 0
     
     # Compute quantities that depend on the global state of the system.
     # Thus they are the same for all agents during this time step
@@ -144,42 +150,49 @@ def evolution_step(graph, parameters, test=False):
         # Agent's utility is higher than a minimal utility
         if utility >= node['minimal_utility']:
             adopters_at_step.append(node_index)
+            adopters_by_utility += 1
         # or marketing influences the agent
         elif parameters['marketing_effort'] and \
           len(adopters_among_neighbors) > 0:
             prob_adoption = np.random.random()
             if prob_adoption < parameters['marketing_effort']:
                 adopters_at_step.append(node_index)
+                adopters_by_marketing += 1
 
     # Update the graph with customers who adopted in this time step
     for node_index in adopters_at_step:
         node = graph.node[node_index]
         node['adopter'] = 1
     
-    # Return number of adopters at this step
-    return len(adopters_at_step)
+    # Return collected data from the step
+    data = {'adopters': len(adopters_at_step),
+            'adopters_by_utility': adopters_by_utility,
+            'adopters_by_marketing': adopters_by_marketing,
+            'global_utility': global_utility}
+
+    return data
 
 
 def evolution(graph, parameters, max_time, test=False):
     """
     Compute the evolution of the algorithm up to max_time.
 
-    Return: A dictionary with the number of adopters and the global
-    utility per time step.
+    graph: networkx graph in which takes place the evolution.
+    parameters: Dictionary of parameters for the algorithm.
+    max_time: Time to stop the algorithm.
+
+    Return: A DataFrame with all the data collected
+            at each time step.
     """
     # Save the adopters at each time during the evolution
-    adopters = []
-    
-    # Compute the clustering index during the evolution
-    global_utility = []
-    
+    data = []
+
     # Perform the evolution
     for t in range(max_time):
-        adopters_at_t = evolution_step(graph, parameters, test)
-        adopters.append(adopters_at_t)
-        global_utility.append(compute_global_utility(graph))
-    
-    data = {'adopters': adopters, 'global_utility': global_utility}
+        data_at_t = evolution_step(graph, parameters, test)
+        data.append(data_at_t)
+
+    data = pd.DataFrame(data)
     return data
 
 
@@ -191,8 +204,8 @@ def single_run(parameters, max_time):
     parameters: Dictionary of parameters for the algorithm.
     max_time: Time to stop the algorithm.
 
-    Return: A dictionary with the number of adopters with and without
-    reflexivity.
+    Return: A Pandas panel with the data obtained by running the
+            algorithm with and without reflexivity.
     """
     parameters = parameters.copy()
     G = generate_initial_conditions(parameters)
@@ -207,8 +220,8 @@ def single_run(parameters, max_time):
     set_seed(G, parameters, reset=True)
     data_rx = evolution(G, parameters, max_time)
 
-    return {'no_rx': data_no_rx,
-            'rx': data_rx}
+    panel = pd.Panel({'no_rx': data_no_rx, 'rx': data_rx})
+    return panel
 
 
 def compute_run(number_of_times, parameters, max_time, dview=None):
@@ -216,21 +229,26 @@ def compute_run(number_of_times, parameters, max_time, dview=None):
     Compute a run of the algorithm.
     
     A run consists in repeating the evolution of the algorithm under
-    the same conditions a certain number_of_times.
+    the same conditions a certain number_of_times until max_time.
 
-    dview is direct view instance from an ipyparallel cluster.
+    number_of_times: Number of times to repeat the evolution of
+                     the algorithm.
+    parameters: Dictionary of parameters for the algorithm.
+    max_time: Time to stop the algorithm.
+    dview: Direct view instance from an ipyparallel cluster.
+
+    Returns: A list of Pandas panels, each of which is the result
+             of a single run of the algorithm with and without
+             reflexvity.
     """
 
     # Perform the run
     if dview is None:
-        raw_data = map(lambda x: single_run(parameters, max_time),
-                       range(number_of_times))
+        data = map(lambda x: single_run(parameters, max_time),
+                   range(number_of_times))
     else:
-        raw_data = dview.map_sync(lambda x: single_run(parameters, max_time),
-                                  range(number_of_times))
-
-    data = {'no_rx': [d['no_rx'] for d in raw_data],
-            'rx': [d['rx'] for d in raw_data]}
+        data = dview.map_sync(lambda x: single_run(parameters, max_time),
+                              range(number_of_times))
 
     return data
 

@@ -176,3 +176,31 @@ def load_parameters_from_file(param_file):
     with open(param_file, 'r') as f:
         parameters = json.loads(f.read())
     return parameters
+
+
+def get_values_from_compute_run(data, with_reflexivity, variable):
+    """
+    Get all values for a particular variable in data.
+
+    data: A list of Pandas panels, which must be the result of
+          compute_run.
+    with_reflexivity: True or False, depending if we want
+                      to get the values with or without
+                      reflexivity.
+    variable: Name of the variable we want to get values
+              from. Possible variables are defined in
+              evolution_step.
+
+    Returns: A list of lists containing the values we want
+             to get from compute_run.
+    """
+    if with_reflexivity:
+        rx_field = 'rx'
+    else:
+        rx_field = 'no_rx'
+
+    try:
+        values = [list(d[rx_field][variable]) for d in data]
+        return values
+    except KeyError:
+        print("Variable %s is not part of the collected data" % variable)
