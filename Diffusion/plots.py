@@ -61,6 +61,32 @@ def plot_adopters(data, par_name, par_value, axis=None, cumulative=False,
         plt.tick_params(axis='both', which='major', labelsize=fontsize-2)
 
 
+def plot_adopters_type(data, par_name, par_value, axis, cumulative=False,
+                       fontsize=15, with_reflexivity=False):
+    """
+    Plot number of type of adopters against time.
+
+    with_reflexivity: Get data with or without reflexivity
+    """
+    utility = get_values_from_compute_run(data, with_reflexivity,
+                                          variable='adopters_by_utility')
+    marketing = get_values_from_compute_run(data, with_reflexivity,
+                                            variable='adopters_by_marketing')
+
+    if cumulative:
+        utility = map(np.cumsum, utility)
+        marketing = map(np.cumsum, marketing)
+
+    sns.tsplot(data=utility, condition='Adopters by utility', ax=axis,
+               color=sns.xkcd_rgb["tomato"])
+    sns.tsplot(data=marketing, condition='Adopters by marketing',
+               ax=axis, color=sns.xkcd_rgb["turquoise blue"])
+    axis.set_xlabel(r'$%s = %s$' % (par_name, str(par_value)),
+                    fontsize=fontsize)
+    axis.legend(loc='best', fontsize=fontsize-2)
+    axis.tick_params(axis='both', which='major', labelsize=fontsize-2)
+
+
 def plot_global_utility(data, axis, activation_value, max_time, fontsize):
     """
     Plot global utility against time.
