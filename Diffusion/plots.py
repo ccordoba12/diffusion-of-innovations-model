@@ -109,11 +109,13 @@ def plot_global_utility(data, axis, activation_value, max_time, fontsize):
     axis.tick_params(labelsize=fontsize-2)
 
 
-def multiplot_adopters(data, par_name, par_values, cumulative, filename):
+def multiplot_variable(multiple_data, plot_func, par_name, par_values,
+                       cumulative, filename=None, **kwargs):
     """
-    Plot several adopter graphs in the same plot.
+    Plot several variable graphs in the same plot.
 
-    data: data of compute_run.
+    multiple_data: List of data obtained by running compute_run
+                   over each entry of set_of_params.
     par_name: Name of the main parameter that we are varying in the simulation.
     par_values: List of values for the main parameter.
                 It can only contain 4 values.
@@ -127,18 +129,19 @@ def multiplot_adopters(data, par_name, par_values, cumulative, filename):
         figsize = (10, 10)
         fontsize = 15
 
-    f, axes = plt.subplots(2, 2, figsize=figsize, sharex=True, sharey=True)
+    fig, axes = plt.subplots(2, 2, figsize=figsize, sharex=True, sharey=True)
 
-    for ax, d, v in zip(axes.flat, data, par_values):
-        plot_adopters(data=d,
-                      par_name=par_name,
-                      par_value=v,
-                      axis=ax,
-                      fontsize=fontsize,
-                      cumulative=cumulative)
+    for ax, d, v in zip(axes.flat, multiple_data, par_values):
+        plot_func(data=d,
+                  par_name=par_name,
+                  par_value=v,
+                  axis=ax,
+                  fontsize=fontsize,
+                  cumulative=cumulative,
+                  **kwargs)
 
-    f.tight_layout()
-    f.savefig(filename, dpi=f.dpi)
+    if filename:
+        fig.savefig(filename, dpi=300, bbox_inches='tight')
 
 
 def multiplot_adopters_and_global_utility(multiple_data, set_of_params,
