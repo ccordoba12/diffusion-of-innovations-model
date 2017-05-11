@@ -204,3 +204,39 @@ def get_values_from_compute_run(data, with_reflexivity, variable):
         return values
     except KeyError:
         print("Variable %s is not part of the collected data" % variable)
+
+
+def get_adopters_percentaje_upto_activation(data, parameters):
+    """
+    Get the percentaje of adopters up to point where global
+    utility makes the reflexivity index greater than zero.
+    """
+
+    # Get values for global utility
+    Ug = get_values_from_compute_run(data, with_reflexivity=True,
+                                     variable='global_utility')
+
+    # Get a mean series for Ug
+    Ug_mean = np.mean(np.array(Ug), axis=0)
+
+    # Get Ug activation value (i.e. value when adoption takes off
+    # because of reflexivity)
+    activation_value = compute_global_utility_activation_value(parameters)
+
+    # Get adopters
+    adopters = get_values_from_compute_run(data, with_reflexivity=True,
+                                           variable='adopters')
+
+    # Get a mean series for adopters
+    adopters_mean = np.mean(np.array(adopters), axis=0)
+
+    # Get time when adoption takes off because of reflexivity
+    activation_time = len(Ug_mean[Ug_mean < activation_value])
+
+    # Get adopters up to activation
+    adopters_upto_activation = np.sum(adopters_mean[:activation_time])
+
+    # Get percentaje of adopters up to activation
+    percentaje = adopters_upto_activation/parameters['number_of_consumers']
+
+    return percentaje * 100
