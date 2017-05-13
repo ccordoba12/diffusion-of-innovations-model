@@ -5,6 +5,7 @@ Run a complete analysis for a give parameter
 """
 
 import atexit
+import csv
 import glob
 import json
 import os
@@ -139,9 +140,9 @@ if PARAMETERS_FILE:
     name = osp.splitext(PARAMETERS_FILE)[0] + '_'
     number = len(glob.glob(osp.join(RERUNS_DIR, name) + '[!types].png'))
     filename = name + str(number)
-    fig_filename = osp.join(RERUNS_DIR, filename)
+    filename = osp.join(RERUNS_DIR, filename)
 else:
-    fig_filename = osp.splitext(filename)[0]
+    filename = osp.splitext(filename)[0]
 
 
 # Generate plots
@@ -151,7 +152,7 @@ multiplot_adopters_and_global_utility(
     par_name=article_parameters[run['main_parameter']],
     par_values=run['parameter_values'],
     cumulative=run['cumulative'],
-    filename=fig_filename + '.png',
+    filename=filename + '.png',
     max_time=run['max_time']
 )
 
@@ -160,4 +161,15 @@ multiplot_variable(multiple_data=data,
                    par_name=article_parameters[run['main_parameter']],
                    par_values=run['parameter_values'],
                    cumulative=run['cumulative'],
-                   filename=fig_filename + '_types.png')
+                   filename=filename + '_types.png')
+
+
+#==============================================================================
+# Save adopters percentaje up to activation to a csv file
+#==============================================================================
+with open(filename + '.csv', 'wb') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow([run['main_parameter'], 'Percentaje'])
+    for d, p, v in zip(data, set_of_parameters, run['parameter_values']):
+        percentaje = get_adopters_percentaje_upto_activation(d, p)
+        writer.writerow([v, percentaje])
