@@ -80,7 +80,7 @@ def plot_adopters_type(data, par_name, par_value, axis, cumulative=False,
     sns.tsplot(data=utility, condition='Adopters by utility', ax=axis,
                color=sns.xkcd_rgb["tomato"])
     sns.tsplot(data=marketing, condition='Adopters by marketing',
-               ax=axis, color=sns.xkcd_rgb["turquoise blue"])
+               ax=axis, color=sns.xkcd_rgb["soft purple"])
     axis.set_xlabel(r'$%s = %s$' % (par_name, str(par_value)),
                     fontsize=fontsize)
     axis.legend(loc='best', fontsize=fontsize-2)
