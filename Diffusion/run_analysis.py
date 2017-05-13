@@ -16,10 +16,12 @@ from ipyparallel import Client
 from IPython.core.getipython import get_ipython
 
 from algorithm import compute_run, generate_parameters
-from plots import multiplot_adopters_and_global_utility
+from plots import (multiplot_variable, plot_adopters_type,
+                   multiplot_adopters_and_global_utility)
 from all_parameters import (PARAMETERS_FILE, RESULTS_DIR, RERUNS_DIR,
                             SAVED_RESULTS_DIR)
-from utils import load_parameters_from_file
+from utils import (load_parameters_from_file,
+                   get_adopters_percentaje_upto_activation)
 
 
 #==============================================================================
@@ -135,20 +137,27 @@ for p in set_of_parameters:
 # File to save the fig
 if PARAMETERS_FILE:
     name = osp.splitext(PARAMETERS_FILE)[0] + '_'
-    number = len(glob.glob(osp.join(RERUNS_DIR, name) + '*.png'))
-    filename = name + str(number) + '.png'
+    number = len(glob.glob(osp.join(RERUNS_DIR, name) + '[!types].png'))
+    filename = name + str(number)
     fig_filename = osp.join(RERUNS_DIR, filename)
 else:
-    fig_filename = osp.splitext(filename)[0] + '.png'
+    fig_filename = osp.splitext(filename)[0]
 
 
-# Generate plot
+# Generate plots
 multiplot_adopters_and_global_utility(
     multiple_data=data,
     set_of_params=set_of_parameters,
     par_name=article_parameters[run['main_parameter']],
     par_values=run['parameter_values'],
     cumulative=run['cumulative'],
-    filename=fig_filename,
+    filename=fig_filename + '.png',
     max_time=run['max_time']
 )
+
+multiplot_variable(multiple_data=data,
+                   plot_func=plot_adopters_type,
+                   par_name=article_parameters[run['main_parameter']],
+                   par_values=run['parameter_values'],
+                   cumulative=run['cumulative'],
+                   filename=fig_filename + '_types.png')
