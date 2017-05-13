@@ -38,10 +38,10 @@ SAVED_RESULTS_DIR = osp.join(LOCATION, 'Saved')
 # - max_time: Maximum time until the simulation is stop.
 run = dict(
     number_of_times = 70,
-    parameter_values = [0.4, 0.5, 0.6, 0.7],
-    cumulative = True,
-    main_parameter = 'quality',
-    max_time = 160
+    parameter_values = [0.7, 0.75, 0.8, 0.85],
+    cumulative = False,
+    main_parameter = 'social_influence',
+    max_time = 25
 )
 
 
@@ -52,16 +52,16 @@ run = dict(
 # parameters
 parameters = dict(
     number_of_consumers = 1000,
-    social_influence = 0.7,
-    randomness = 0.01,
-    activation_sharpness = 40,
-    level = 1,
+    social_influence = 0.6,
+    randomness = 1,
+    activation_sharpness = 30,
+    level = 2,
     quality = 0.5,
-    initial_seed = 0.001,
+    initial_seed = 0.003,
     critical_mass = 0.5,
-    number_of_neighbors = 8,
+    number_of_neighbors = 5,
     adopters_threshold = 0.5,
-    marketing_effort = 0,
+    marketing_effort = 0.03,
 )
 
 
@@ -74,4 +74,5 @@ parameters = dict(
 # 3. These file are saved in a SAVED_RESULTS_DIR.
 # 4. The results are of these re-runs are saved in
 #    RERUNS_DIR.
-PARAMETERS_FILE = 'social_influence_60.txt'
+PARAMETERS_FILE = 'social_influence_136.json'
+#PARAMETERS_FILE = ''
