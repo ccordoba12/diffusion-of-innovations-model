@@ -24,14 +24,11 @@ if not os.name == 'nt':
 sns.set_style("whitegrid")
 
 
-def plot_adopters(data, par_name, par_value, axis=None, cumulative=False,
-                  fontsize=15):
+def plot_adopters(data, axis=None, cumulative=False, fontsize=15):
     """
     Plot number of adopters against time.
 
     data: contains the output of compute_run.
-    par_name: Parameter name that we're varying in the simulation.
-    par_value: Parameter value that we're varying in the simulation.
     axis: Matplotlib axis to add this plot (if any).
     cumulative: Whether to plot the cumulative number of adopters or not
     fontsize: Font size for legends and tick marks.
@@ -45,20 +42,13 @@ def plot_adopters(data, par_name, par_value, axis=None, cumulative=False,
         no_rx_data = map(np.cumsum, no_rx_data)
         rx_data = map(np.cumsum, rx_data)
 
-    if axis:
-        sns.tsplot(data=no_rx_data, condition='Without Reflexivity', ax=axis)
-        sns.tsplot(data=rx_data, color='m', condition='With Reflexivity',
-                   ax=axis)
-        axis.set_xlabel(r'$%s = %s$' % (par_name, str(par_value)),
-                        fontsize=fontsize)
-        axis.legend(loc='best', fontsize=fontsize-2)
-        axis.tick_params(axis='both', which='major', labelsize=fontsize-2)
-    else:
-        sns.tsplot(data=no_rx_data, condition='Without Reflexivity')
-        sns.tsplot(data=rx_data, color='m', condition='With Reflexivity')
-        plt.title(r'$%s = %s$' % (par_name, str(par_value)), fontsize=fontsize)
-        plt.legend(loc='best', fontsize=fontsize-2)
-        plt.tick_params(axis='both', which='major', labelsize=fontsize-2)
+    sns.tsplot(data=no_rx_data, condition='Without Reflexivity', ax=axis)
+    sns.tsplot(data=rx_data, color='m', condition='With Reflexivity',
+               ax=axis)
+    axis.set_xlabel('Time')
+    axis.set_ylabel('No. of Adopters')
+    axis.legend(loc='best', fontsize=fontsize-2)
+    axis.tick_params(axis='both', which='major', labelsize=fontsize-2)
 
 
 def plot_adopters_type(data, par_name, par_value, axis, cumulative=False,
@@ -81,17 +71,22 @@ def plot_adopters_type(data, par_name, par_value, axis, cumulative=False,
                color=sns.xkcd_rgb["tomato"])
     sns.tsplot(data=marketing, condition='Adopters by marketing',
                ax=axis, color=sns.xkcd_rgb["soft purple"])
-    axis.set_xlabel(r'$%s = %s$' % (par_name, str(par_value)),
-                    fontsize=fontsize)
+    axis.set_title(r'$%s = %s$' % (par_name, str(par_value)),
+                   fontsize=fontsize)
+    axis.set_xlabel('Time')
+    axis.set_ylabel('No. of adopters')
     axis.legend(loc='best', fontsize=fontsize-2)
     axis.tick_params(axis='both', which='major', labelsize=fontsize-2)
 
 
-def plot_global_utility(data, axis, activation_value, max_time, fontsize):
+def plot_global_utility(data, par_name, par_value, axis, activation_value,
+                        max_time, fontsize):
     """
     Plot global utility against time.
 
     data: Contains the output of compute_run.
+    par_name: Parameter name that we're varying in the simulation.
+    par_value: Parameter value that we're varying in the simulation.
     axis: Matplotlib axis to add this plot to.
     activation_value: First global utility value for which the
                       reflexivity index is greater than zero.
@@ -100,6 +95,8 @@ def plot_global_utility(data, axis, activation_value, max_time, fontsize):
     Ug_data = get_values_from_compute_run(data, with_reflexivity=True,
                                           variable='global_utility')
 
+    axis.set_title(r'$%s = %s$' % (par_name, str(par_value)),
+                   fontsize=fontsize)
     axis.set_ylabel('$U_G$', fontsize=fontsize)
 
     plt.setp(axis.get_xticklabels(), visible=False)
@@ -139,6 +136,12 @@ def multiplot_variable(multiple_data, plot_func, par_name, par_values,
                   fontsize=fontsize,
                   cumulative=cumulative,
                   **kwargs)
+
+    # Adjustments to plots
+    for ax in axes[0]:
+        ax.set_xlabel('')
+    for ax in axes[:,1]:
+        ax.set_ylabel('')
 
     if filename:
         fig.savefig(filename, dpi=300, bbox_inches='tight')
@@ -186,7 +189,7 @@ def multiplot_adopters_and_global_utility(multiple_data, set_of_params,
 
     for i, d, v, p in zip(range(4), multiple_data, par_values, set_of_params):
         inner_grid = gridspec.GridSpecFromSubplotSpec(2, 1, subplot_spec=outer_grid[i],
-                                                      height_ratios=[1, 2.8],
+                                                      height_ratios=[1, 3.0],
                                                       hspace=0.08)
         ax_top = plt.Subplot(fig, inner_grid[0])
         ax_adopters = plt.Subplot(fig, inner_grid[1])
@@ -219,22 +222,25 @@ def multiplot_adopters_and_global_utility(multiple_data, set_of_params,
         fig.add_subplot(ax_top, sharex=ax_adopters)
 
         plot_adopters(data=d,
-                      par_name=par_name,
-                      par_value=v,
                       axis=ax_adopters,
                       fontsize=fontsize,
                       cumulative=cumulative)
 
         plot_global_utility(data=d,
+                            par_name=par_name,
+                            par_value=v,
                             axis=ax_top,
                             activation_value=activation_value,
                             max_time=max_time,
                             fontsize=fontsize)
 
-        # Adjustments to top plots
+        # Adjustments to plots
+        if i == 0 or i == 1:
+            ax_adopters.set_xlabel('')
         if i == 1 or i == 3:
             ax_top.set_ylabel('')
             ax_top.tick_params(pad=15)
+            ax_adopters.set_ylabel('')
 
         # Save top ylim of the first plot to use it for the
         # rest
