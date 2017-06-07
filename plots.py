@@ -15,6 +15,7 @@ import matplotlib.gridspec as gridspec
 import seaborn as sns
 
 from utils import (compute_global_utility_activation_value,
+                   compute_activation_time,
                    get_values_from_compute_run)
 
 
@@ -24,112 +25,142 @@ if not os.name == 'nt':
 sns.set_style("whitegrid")
 
 
-def plot_adopters(data, axis=None, cumulative=False, fontsize=15):
+def plot_adopters(data, parameters, axis, cumulative=False, fontsize=15):
     """
     Plot number of adopters against time.
 
     data: contains the output of compute_run.
-    axis: Matplotlib axis to add this plot (if any).
+    parameters: Parameters of the run.
+    axis: Matplotlib axis to add this plot to.
     cumulative: Whether to plot the cumulative number of adopters or not
     fontsize: Font size for legends and tick marks.
     """
+    # Data to plot
     no_rx_data = get_values_from_compute_run(data, with_reflexivity=False,
                                              variable='adopters')
     rx_data = get_values_from_compute_run(data, with_reflexivity=True,
                                           variable='adopters')
+    activation_time = compute_activation_time(data, parameters)
 
     if cumulative:
         no_rx_data = map(np.cumsum, no_rx_data)
         rx_data = map(np.cumsum, rx_data)
 
+    # Plots
     sns.tsplot(data=no_rx_data, condition='Without Reflexivity', ax=axis)
     sns.tsplot(data=rx_data, color='m', condition='With Reflexivity',
                ax=axis)
+    axis.axvline(x=activation_time, linestyle='--', linewidth=1, color='0.4')
+
+    # Plot adjustments
     axis.set_xlabel('Time')
     axis.set_ylabel('No. of Adopters')
+    axis.set_ylim(bottom=0)
     axis.legend(loc='best', fontsize=fontsize-2)
     axis.tick_params(axis='both', which='major', labelsize=fontsize-2)
 
 
-def plot_adopters_type(data, par_name, par_value, axis, cumulative=False,
-                       fontsize=15, with_reflexivity=False):
+def plot_adopters_type(data, parameters, par_name, par_value, axis,
+                       cumulative=False, fontsize=15,
+                       with_reflexivity=False,
+                       with_activation_time=True):
     """
     Plot number of type of adopters against time.
 
-    with_reflexivity: Get data with or without reflexivity
+    data: Contains the output of compute_run.
+    parameters: Parameters of the run.
+    par_name: Parameter name that we're varying in the simulation.
+    par_value: Parameter value that we're varying in the simulation.
+    axis: Matplotlib axis to add this plot to.
+    cumulative: Whether to plot the cumulative number of adopters or not.
+    fontsize: Font size for legends and tick marks.
+    with_reflexivity: Get data with or without reflexivity.
+    with_activation_time: Wheter to plot activation time or not.
     """
+    # Data to plot
     utility = get_values_from_compute_run(data, with_reflexivity,
                                           variable='adopters_by_utility')
     marketing = get_values_from_compute_run(data, with_reflexivity,
                                             variable='adopters_by_marketing')
+    activation_time = compute_activation_time(data, parameters)
 
     if cumulative:
         utility = map(np.cumsum, utility)
         marketing = map(np.cumsum, marketing)
 
+    # Plots
     sns.tsplot(data=utility, condition='Adopters by utility', ax=axis,
                color=sns.xkcd_rgb["tomato"])
     sns.tsplot(data=marketing, condition='Adopters by marketing',
                ax=axis, color=sns.xkcd_rgb["soft purple"])
+    if with_activation_time:
+        axis.axvline(x=activation_time, linestyle='--', linewidth=1,
+                     color='0.4')
+
+    # Plot adjustments
     axis.set_title(r'$%s = %s$' % (par_name, str(par_value)),
                    fontsize=fontsize)
     axis.set_xlabel('Time')
     axis.set_ylabel('No. of adopters')
+    axis.set_ylim(bottom=0)
     axis.legend(loc='best', fontsize=fontsize-2)
     axis.tick_params(axis='both', which='major', labelsize=fontsize-2)
 
 
-def plot_global_utility(data, par_name, par_value, axis, activation_value,
-                        max_time, fontsize):
+def plot_global_utility(data, parameters, par_name, par_value, axis,
+                        activation_value, max_time, fontsize):
     """
     Plot global utility against time.
 
     data: Contains the output of compute_run.
+    parameters: Parameters of the run.
     par_name: Parameter name that we're varying in the simulation.
     par_value: Parameter value that we're varying in the simulation.
     axis: Matplotlib axis to add this plot to.
     activation_value: First global utility value for which the
                       reflexivity index is greater than zero.
     max_time: Max simulation time.
+    fontsize: Font size for legends and tick marks.
     """
+    # Data to plot
     Ug_data = get_values_from_compute_run(data, with_reflexivity=True,
                                           variable='global_utility')
+    activation_time = compute_activation_time(data, parameters)
 
+    # Plot adjustments
     axis.set_title(r'$%s = %s$' % (par_name, str(par_value)),
                    fontsize=fontsize)
     axis.set_ylabel('$U_G$', fontsize=fontsize)
-
+    axis.tick_params(labelsize=fontsize-2)
     plt.setp(axis.get_xticklabels(), visible=False)
 
+    # Plots
     sns.tsplot(data=Ug_data, color=sns.xkcd_rgb["medium green"], ax=axis)
-    plt.plot([activation_value] * max_time, '--', linewidth=1, color='0.4')
-    axis.tick_params(labelsize=fontsize-2)
+    axis.axvline(x=activation_time, linestyle='--', linewidth=1, color='0.4')
 
 
-def multiplot_variable(multiple_data, plot_func, par_name, par_values,
-                       cumulative, filename=None, **kwargs):
+def multiplot_variable(multiple_data, set_of_params, plot_func, par_name,
+                       par_values, cumulative, filename=None, **kwargs):
     """
     Plot several variable graphs in the same plot.
 
     multiple_data: List of data obtained by running compute_run
                    over each entry of set_of_params.
+    set_of_params: Set of parameters.
     par_name: Name of the main parameter that we are varying in the simulation.
     par_values: List of values for the main parameter.
                 It can only contain 4 values.
     cumulative: Whether to plot cumulative curvers or not.
     filename: Name of the file to save this figure to.
     """
-    if os.name == 'nt':
-        figsize = (9, 9)
-        fontsize = 11
-    else:
-        figsize = (10, 10)
-        fontsize = 15
+    figsize = (8.5, 8.5)
+    fontsize = 11
 
     fig, axes = plt.subplots(2, 2, figsize=figsize, sharex=True, sharey=True)
 
-    for ax, d, v in zip(axes.flat, multiple_data, par_values):
+    for ax, d, v, p in zip(axes.flat, multiple_data, par_values, set_of_params):
         plot_func(data=d,
+                  parameters=p,
                   par_name=par_name,
                   par_value=v,
                   axis=ax,
@@ -156,7 +187,7 @@ def multiplot_adopters_and_global_utility(multiple_data, set_of_params,
 
     multiple_data: List of data obtained by running compute_run
                    over each entry of set_of_params.
-    set_of_params: Set of parameters
+    set_of_params: Set of parameters.
     par_name: Name of the main parameter that we are varying in
               the simulation.
     par_values: List of values for the main parameter.
@@ -171,12 +202,8 @@ def multiplot_adopters_and_global_utility(multiple_data, set_of_params,
               "can only contain 4 or less values.")
         return
 
-    if os.name == 'nt':
-        figsize = (9, 9)
-        fontsize = 11
-    else:
-        figsize = (10, 10)
-        fontsize = 15
+    figsize = (9, 9)
+    fontsize = 11
 
     fig = plt.figure(figsize=figsize)
 
@@ -222,11 +249,13 @@ def multiplot_adopters_and_global_utility(multiple_data, set_of_params,
         fig.add_subplot(ax_top, sharex=ax_adopters)
 
         plot_adopters(data=d,
+                      parameters=p,
                       axis=ax_adopters,
                       fontsize=fontsize,
                       cumulative=cumulative)
 
         plot_global_utility(data=d,
+                            parameters=p,
                             par_name=par_name,
                             par_value=v,
                             axis=ax_top,

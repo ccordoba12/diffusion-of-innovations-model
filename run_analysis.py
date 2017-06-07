@@ -157,6 +157,7 @@ multiplot_adopters_and_global_utility(
 )
 
 multiplot_variable(multiple_data=data,
+                   set_of_params=set_of_parameters,
                    plot_func=plot_adopters_type,
                    par_name=article_parameters[run['main_parameter']],
                    par_values=run['parameter_values'],
