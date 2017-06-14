@@ -62,7 +62,7 @@ def plot_adopters(data, parameters, axis, cumulative=False, fontsize=15):
 
 def plot_adopters_type(data, parameters, par_name, par_value, axis,
                        cumulative=False, fontsize=15,
-                       with_reflexivity=False,
+                       with_reflexivity=True,
                        with_activation_time=True):
     """
     Plot number of type of adopters against time.
