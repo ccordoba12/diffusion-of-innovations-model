@@ -14,9 +14,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import seaborn as sns
 
-from utils import (compute_global_utility_activation_value,
-                   compute_activation_time,
-                   get_values_from_compute_run)
+from utils import compute_activation_time, get_values_from_compute_run
 
 
 if not os.name == 'nt':
@@ -108,7 +106,7 @@ def plot_adopters_type(data, parameters, par_name, par_value, axis,
 
 
 def plot_global_utility(data, parameters, par_name, par_value, axis,
-                        activation_value, max_time, fontsize):
+                        max_time, fontsize):
     """
     Plot global utility against time.
 
@@ -117,8 +115,6 @@ def plot_global_utility(data, parameters, par_name, par_value, axis,
     par_name: Parameter name that we're varying in the simulation.
     par_value: Parameter value that we're varying in the simulation.
     axis: Matplotlib axis to add this plot to.
-    activation_value: First global utility value for which the
-                      reflexivity index is greater than zero.
     max_time: Max simulation time.
     fontsize: Font size for legends and tick marks.
     """
@@ -242,9 +238,6 @@ def multiplot_adopters_and_global_utility(multiple_data, set_of_params,
         if i == 0 or i == 2:
             plt.setp(ax_top.get_yticklabels(), visible=False)
 
-        # Global utility activation value
-        activation_value = compute_global_utility_activation_value(p)
-
         fig.add_subplot(ax_adopters)
         fig.add_subplot(ax_top, sharex=ax_adopters)
 
@@ -259,7 +252,6 @@ def multiplot_adopters_and_global_utility(multiple_data, set_of_params,
                             par_name=par_name,
                             par_value=v,
                             axis=ax_top,
-                            activation_value=activation_value,
                             max_time=max_time,
                             fontsize=fontsize)
 
