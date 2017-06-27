@@ -115,6 +115,10 @@ set_of_parameters = generate_parameters(parameters,
                                         run['main_parameter'],
                                         run['parameter_values'])
 
+# To reload code
+get_ipython().magic('%reload_ext autoreload')
+get_ipython().magic('%autoreload 2')
+
 # Reset the engines
 if dview is not None:
     get_ipython().magic('px %reset -f')
