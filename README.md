@@ -33,6 +33,7 @@ corresponding variables in the article:
 
 1. Set model parameters for a given run in `all_parameters.py`.
 2. Run `run_analysis.py`
-3. The results are several plots and a json file with the parameters of
-   simulation. Both are saved in a *Results* subdirectory in this
-   same directory.
+3. The results are several plots, a json file with the parameters of simulation
+   and a csv file with the percentage of adopters when reflexivity is activated
+   in the system. All are saved in a *Results* subdirectory in this same
+   directory.
