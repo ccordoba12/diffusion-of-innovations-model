@@ -23,7 +23,9 @@ if not os.name == 'nt':
 sns.set_style("whitegrid")
 
 
-def plot_adopters(data, parameters, axis, cumulative=False, fontsize=15):
+def plot_adopters(data, parameters, axis,
+                  par_name=None, par_value=None,
+                  cumulative=False, fontsize=15):
     """
     Plot number of adopters against time.
 
@@ -51,6 +53,9 @@ def plot_adopters(data, parameters, axis, cumulative=False, fontsize=15):
     axis.axvline(x=activation_time, linestyle='--', linewidth=1, color='0.4')
 
     # Plot adjustments
+    if par_name is not None and par_value is not None:
+        axis.set_title(r'$%s = %s$' % (par_name, str(par_value)),
+                       fontsize=fontsize)
     axis.set_xlabel('Time')
     axis.set_ylabel('No. of Adopters')
     axis.set_ylim(bottom=0)
@@ -58,7 +63,8 @@ def plot_adopters(data, parameters, axis, cumulative=False, fontsize=15):
     axis.tick_params(axis='both', which='major', labelsize=fontsize-2)
 
 
-def plot_adopters_type(data, parameters, par_name, par_value, axis,
+def plot_adopters_type(data, parameters, axis,
+                       par_name=None, par_value=None,
                        cumulative=False, fontsize=15,
                        with_reflexivity=True,
                        with_activation_time=True):
@@ -67,9 +73,9 @@ def plot_adopters_type(data, parameters, par_name, par_value, axis,
 
     data: Contains the output of compute_run.
     parameters: Parameters of the run.
+    axis: Matplotlib axis to add this plot to.
     par_name: Parameter name that we're varying in the simulation.
     par_value: Parameter value that we're varying in the simulation.
-    axis: Matplotlib axis to add this plot to.
     cumulative: Whether to plot the cumulative number of adopters or not.
     fontsize: Font size for legends and tick marks.
     with_reflexivity: Get data with or without reflexivity.
@@ -96,8 +102,9 @@ def plot_adopters_type(data, parameters, par_name, par_value, axis,
                      color='0.4')
 
     # Plot adjustments
-    axis.set_title(r'$%s = %s$' % (par_name, str(par_value)),
-                   fontsize=fontsize)
+    if par_name is not None and par_value is not None:
+        axis.set_title(r'$%s = %s$' % (par_name, str(par_value)),
+                       fontsize=fontsize)
     axis.set_xlabel('Time')
     axis.set_ylabel('No. of adopters')
     axis.set_ylim(bottom=0)
@@ -105,17 +112,17 @@ def plot_adopters_type(data, parameters, par_name, par_value, axis,
     axis.tick_params(axis='both', which='major', labelsize=fontsize-2)
 
 
-def plot_global_utility(data, parameters, par_name, par_value, axis,
-                        max_time, fontsize):
+def plot_global_utility(data, parameters, axis,
+                        par_name=None, par_value=None,
+                        fontsize=15):
     """
     Plot global utility against time.
 
     data: Contains the output of compute_run.
     parameters: Parameters of the run.
+    axis: Matplotlib axis to add this plot to.
     par_name: Parameter name that we're varying in the simulation.
     par_value: Parameter value that we're varying in the simulation.
-    axis: Matplotlib axis to add this plot to.
-    max_time: Max simulation time.
     fontsize: Font size for legends and tick marks.
     """
     # Data to plot
@@ -124,8 +131,9 @@ def plot_global_utility(data, parameters, par_name, par_value, axis,
     activation_time = compute_activation_time(data, parameters)
 
     # Plot adjustments
-    axis.set_title(r'$%s = %s$' % (par_name, str(par_value)),
-                   fontsize=fontsize)
+    if par_name is not None and par_value is not None:
+        axis.set_title(r'$%s = %s$' % (par_name, str(par_value)),
+                       fontsize=fontsize)
     axis.set_ylabel('$U_G$', fontsize=fontsize)
     axis.tick_params(labelsize=fontsize-2)
     plt.setp(axis.get_xticklabels(), visible=False)
@@ -135,11 +143,12 @@ def plot_global_utility(data, parameters, par_name, par_value, axis,
     axis.axvline(x=activation_time, linestyle='--', linewidth=1, color='0.4')
 
 
-def multiplot_variable(multiple_data, set_of_params, plot_func, par_name,
+def multiplot_variable(plot_func, multiple_data, set_of_params, par_name,
                        par_values, cumulative, filename=None, **kwargs):
     """
     Plot several variable graphs in the same plot.
 
+    plot_func: Plot function to use.
     multiple_data: List of data obtained by running compute_run
                    over each entry of set_of_params.
     set_of_params: Set of parameters.
@@ -157,9 +166,9 @@ def multiplot_variable(multiple_data, set_of_params, plot_func, par_name,
     for ax, d, v, p in zip(axes.flat, multiple_data, par_values, set_of_params):
         plot_func(data=d,
                   parameters=p,
+                  axis=ax,
                   par_name=par_name,
                   par_value=v,
-                  axis=ax,
                   fontsize=fontsize,
                   cumulative=cumulative,
                   **kwargs)
@@ -176,8 +185,7 @@ def multiplot_variable(multiple_data, set_of_params, plot_func, par_name,
 
 def multiplot_adopters_and_global_utility(multiple_data, set_of_params,
                                           par_name, par_values,
-                                          cumulative, filename,
-                                          max_time):
+                                          cumulative, filename):
     """
     Plot adopters and global utility in the same graph.
 
@@ -191,7 +199,6 @@ def multiplot_adopters_and_global_utility(multiple_data, set_of_params,
     activation_value: Global utility activation value.
     cumulative: Whether to plot cumulative adopters curvers or not.
     filename: Name of the file to save this figure to.
-    max_time: Max time for the simulation.
     """
     if len(par_values) > 4:
         print("The parameter values list passed to this function "
@@ -249,10 +256,9 @@ def multiplot_adopters_and_global_utility(multiple_data, set_of_params,
 
         plot_global_utility(data=d,
                             parameters=p,
+                            axis=ax_top,
                             par_name=par_name,
                             par_value=v,
-                            axis=ax_top,
-                            max_time=max_time,
                             fontsize=fontsize)
 
         # Adjustments to plots
