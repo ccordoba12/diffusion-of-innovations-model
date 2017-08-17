@@ -17,7 +17,7 @@ from ipyparallel import Client
 from IPython.core.getipython import get_ipython
 
 from algorithm import compute_run, generate_parameters
-from plots import (multiplot_variable, plot_adopters_type,
+from plots import (multiplot_variable, plot_adopters, plot_adopters_type,
                    multiplot_adopters_and_global_utility)
 from all_parameters import (PARAMETERS_FILE, RESULTS_DIR, RERUNS_DIR,
                             SAVED_RESULTS_DIR)
@@ -150,14 +150,24 @@ else:
 
 
 # Generate plots
-multiplot_adopters_and_global_utility(
-    multiple_data=data,
-    set_of_params=set_of_parameters,
-    par_name=article_parameters[run['main_parameter']],
-    par_values=run['parameter_values'],
-    cumulative=run['cumulative'],
-    filename=filename + '.png'
-)
+#multiplot_adopters_and_global_utility(
+#    multiple_data=data,
+#    set_of_params=set_of_parameters,
+#    par_name=article_parameters[run['main_parameter']],
+#    par_values=run['parameter_values'],
+#    cumulative=run['cumulative'],
+#    filename=filename + '.png'
+#)
+
+
+multiplot_variable(plot_func=plot_adopters,
+                   multiple_data=data,
+                   set_of_params=set_of_parameters,
+                   par_name=article_parameters[run['main_parameter']],
+                   par_values=run['parameter_values'],
+                   cumulative=run['cumulative'],
+                   filename=filename + '_adopters.png')
+
 
 multiplot_variable(plot_func=plot_adopters_type,
                    multiple_data=data,
