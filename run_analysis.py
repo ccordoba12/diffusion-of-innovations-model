@@ -156,13 +156,12 @@ multiplot_adopters_and_global_utility(
     par_name=article_parameters[run['main_parameter']],
     par_values=run['parameter_values'],
     cumulative=run['cumulative'],
-    filename=filename + '.png',
-    max_time=run['max_time']
+    filename=filename + '.png'
 )
 
-multiplot_variable(multiple_data=data,
+multiplot_variable(plot_func=plot_adopters_type,
+                   multiple_data=data,
                    set_of_params=set_of_parameters,
-                   plot_func=plot_adopters_type,
                    par_name=article_parameters[run['main_parameter']],
                    par_values=run['parameter_values'],
                    cumulative=run['cumulative'],
