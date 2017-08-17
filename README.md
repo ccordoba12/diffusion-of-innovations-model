@@ -25,14 +25,6 @@ corresponding variables in the article:
 * Total number of consumers: $N$
 * Activation sharpness: $\phi$
 * Critical mass of adopters: $M_{c}$
-
-
-## Other parameters
-
-These parameters are used in Delre's model but we don't use them in our
-simulations (althought they are defined in our code, and so they could be used
-at any time).
-
 * Marketing effort: $e_{1}$
 * Level: $L$
 
@@ -41,6 +33,6 @@ at any time).
 
 1. Set model parameters for a given run in `all_parameters.py`.
 2. Run `run_analysis.py`
-3. The result is a plot and a json file with the parameters of
+3. The results are several plots and a json file with the parameters of
    simulation. Both are saved in a *Results* subdirectory in this
    same directory.
