@@ -47,9 +47,8 @@ def plot_adopters(data, parameters, axis,
         rx_data = map(np.cumsum, rx_data)
 
     # Plots
-    sns.tsplot(data=no_rx_data, condition='Without Reflexivity', ax=axis)
-    sns.tsplot(data=rx_data, color='m', condition='With Reflexivity',
-               ax=axis)
+    sns.tsplot(data=no_rx_data, condition='No Reflexivity', ax=axis)
+    sns.tsplot(data=rx_data, color='m', condition='Reflexivity', ax=axis)
     axis.axvline(x=activation_time, linestyle='--', linewidth=1, color='0.4')
 
     # Plot adjustments
@@ -93,9 +92,9 @@ def plot_adopters_type(data, parameters, axis,
         marketing = map(np.cumsum, marketing)
 
     # Plots
-    sns.tsplot(data=utility, condition='Adopters by utility', ax=axis,
+    sns.tsplot(data=utility, condition='Utility', ax=axis,
                color=sns.xkcd_rgb["tomato"])
-    sns.tsplot(data=marketing, condition='Adopters by marketing',
+    sns.tsplot(data=marketing, condition='Marketing',
                ax=axis, color=sns.xkcd_rgb["soft purple"])
     if with_activation_time:
         axis.axvline(x=activation_time, linestyle='--', linewidth=1,
