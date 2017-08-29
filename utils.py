@@ -163,11 +163,12 @@ def compute_global_utility_activation_value(parameters):
     in the difussion process (but very slightly at the beginning
     though)
     """
-    for global_utility in np.arange(0, parameters['critical_mass'], 5e-6):
+    step = 1e-6
+    for global_utility in np.arange(0, parameters['critical_mass'], step):
         reflexivity_index = logistic(global_utility,
                                      parameters['activation_sharpness'],
                                      parameters['critical_mass'])
-        if reflexivity_index > 5e-6:
+        if reflexivity_index > step and global_utility > 0.01:
             return global_utility
 
 
