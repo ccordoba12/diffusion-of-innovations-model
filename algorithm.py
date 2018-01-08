@@ -26,10 +26,25 @@ def generate_initial_conditions(parameters):
      `parameters` is a dictionary that contains the parameters that control
      the evolution.
     """
-    # Graph creation
-    G = nx.generators.watts_strogatz_graph(parameters['number_of_consumers'],
-                                           parameters['number_of_neighbors'],
-                                           parameters['randomness'])
+    # Previous versions of the model didn't have a graph type
+    # and only worked with small world graphs
+    graph_type = parameters.get('graph_type', 'small_world')
+
+    # Parameters
+    n_consumers = parameters['number_of_consumers']
+    n_neighbors = parameters['number_of_neighbors']
+    randomness = parameters['randomness']
+
+    if graph_type == 'small_world':
+        G = nx.generators.watts_strogatz_graph(n_consumers, n_neighbors,
+                                               randomness)
+    elif graph_type == 'preferential_attachment':
+        G = nx.generators.barabasi_albert_graph(n_consumers, n_neighbors)
+    elif graph_type == 'powerlaw_cluster':
+        G = nx.generators.powerlaw_cluster_graph(n_consumers, n_neighbors,
+                                                 randomness)
+    else:
+        raise ValueError("Wrong or unknown graph type")
     
     # Graph properties
     for node_index in G.nodes():

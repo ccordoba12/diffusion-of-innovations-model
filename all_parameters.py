@@ -37,12 +37,20 @@ SAVED_RESULTS_DIR = osp.join(LOCATION, 'Saved')
 #                   run for
 # - max_time: Maximum time until the simulation is stop.
 run = dict(
-    number_of_times = 70,
-    parameter_values = [0.7, 0.75, 0.8, 0.85],
+    number_of_times = 500,
+    parameter_values = [0.3, 0.45, 0.6, 0.75],
     cumulative = False,
     main_parameter = 'social_influence',
-    max_time = 25
+    max_time = 20
 )
+
+
+# =============================================================================
+# Dictionary for graph types
+# =============================================================================
+graph_types = {1: 'small_world',
+               2: 'preferential_attachment',
+               3: 'powerlaw_cluster'}
 
 
 #==============================================================================
@@ -62,6 +70,7 @@ parameters = dict(
     number_of_neighbors = 5,
     adopters_threshold = 0.5,
     marketing_effort = 0.03,
+    graph_type = graph_types[1]
 )
 
 
@@ -74,5 +83,5 @@ parameters = dict(
 # 3. These file are saved in a SAVED_RESULTS_DIR.
 # 4. The results are of these re-runs are saved in
 #    RERUNS_DIR.
-PARAMETERS_FILE = 'social_influence_136.json'
-#PARAMETERS_FILE = ''
+#PARAMETERS_FILE = 'social_influence_136.json'
+PARAMETERS_FILE = ''
