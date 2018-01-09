@@ -160,6 +160,7 @@ else:
 #)
 
 
+# Plot adopters with and without reflexivity
 multiplot_variable(plot_func=plot_adopters,
                    multiple_data=data,
                    set_of_params=set_of_parameters,
@@ -169,7 +170,7 @@ multiplot_variable(plot_func=plot_adopters,
                    filename=filename + '_adopters.png',
                    ylim_top=None)
 
-
+# Plot adopters per utility and marketing
 multiplot_variable(plot_func=plot_adopters_type,
                    multiple_data=data,
                    set_of_params=set_of_parameters,
