@@ -68,7 +68,6 @@ parameters = dict(
     initial_seed = 0.003,
     critical_mass = 0.5,
     number_of_neighbors = 5,
-    adopters_threshold = 0.5,
     marketing_effort = 0.03,
     graph_type = graph_types[1]
 )

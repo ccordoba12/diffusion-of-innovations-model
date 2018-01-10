@@ -50,7 +50,8 @@ def generate_initial_conditions(parameters):
     for node_index in G.nodes():
         node = G.node[node_index]
         node['adopter'] = 0                      # 1 is adopter, 0 non-adopter
-        node['preference'] = np.random.random()  # pi
+        node['adopters_threshold'] = np.random.random()  # h_{i}
+        node['preference'] = np.random.random()  # p_{i}
         node['minimal_utility'] = np.random.random() # Umin,i
         node['reflexivity'] = np.random.random() # \alpha_{i}
         
@@ -132,7 +133,7 @@ def evolution_step(graph, parameters, test=False):
             adopters_percentaje = len(adopters_among_neighbors) / len(neighbors)
 
             # Computing xi
-            if adopters_percentaje > parameters['adopters_threshold']:
+            if adopters_percentaje > node['adopters_threshold']:
                 local_influence = 1
             else:
                 local_influence = 0

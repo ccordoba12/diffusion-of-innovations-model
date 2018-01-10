@@ -48,7 +48,6 @@ else:
 article_parameters = dict(
     randomness = 'r',
     number_of_neighbors = 'k',
-    adopters_threshold = 'h',
     social_influence = r'\beta',
     quality = 'q',
     number_of_consumers = 'N',

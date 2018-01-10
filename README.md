@@ -20,7 +20,6 @@ corresponding variables in the article:
 * Average number of neighbors: $k$
 * Initial proportion (or seed) of adopters: $\delta$
 * Coefficient of social influence: $\beta$
-* Threshold of adopters among neighbors: $h$
 * Quality: $q$
 * Total number of consumers: $N$
 * Activation sharpness: $\phi$
