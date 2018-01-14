@@ -63,13 +63,15 @@ parameters = dict(
     social_influence = 0.6,
     randomness = 1,
     activation_sharpness = 30,
-    level = 2,
+    level = 1,
     quality = 0.5,
     initial_seed = 0.003,
     critical_mass = 0.5,
     number_of_neighbors = 5,
     marketing_effort = 0.03,
-    graph_type = graph_types[1]
+    graph_type = graph_types[1],
+    use_time_delays = True,
+    time_delays_distro = [(1, 0.1), (12, 0.5), (30, 0.4)]
 )
 
 

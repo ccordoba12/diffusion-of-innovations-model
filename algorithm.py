@@ -45,6 +45,12 @@ def generate_initial_conditions(parameters):
                                                  randomness)
     else:
         raise ValueError("Wrong or unknown graph type")
+
+    if parameters.get('use_time_delays', False):
+        delays_distro = parameters['time_delays_distro']
+        delay_values, delay_probabilites = zip(*delays_distro)
+    else:
+        delay_values, delay_probabilites = None, None
     
     # Graph properties
     for node_index in G.nodes():
@@ -54,17 +60,22 @@ def generate_initial_conditions(parameters):
         node['preference'] = np.random.random()  # p_{i}
         node['minimal_utility'] = np.random.random() # Umin,i
         node['reflexivity'] = np.random.random() # \alpha_{i}
-        
+
+        # Give agents a time delay before they
+        # can use global utility, although they
+        # had already recognized an emergent
+        # pattern
+        if delay_values is not None:
+            node['exposure'] = 0
+            node['time_delay'] = np.random.choice(delay_values,
+                                                  p=delay_probabilites)
+
         # Neighbors never change if the level is an int
         if int(parameters['level']) - parameters['level'] == 0:
             node['neighbors'] = get_neighbors(G, node_index, parameters['level'])
         else:
             node['neighbors'] = []
-    
-    # Create a seed of initial adopters if there's no marketing
-    # if not parameters['marketing_effort']:
-    #    set_seed(G, parameters)
-    
+
     return G
 
 
@@ -152,11 +163,23 @@ def evolution_step(graph, parameters, test=False):
         
         # -- Compute utility if reflexivity is on or off
         if parameters['reflexivity']:
-            # Compute utility if agent has become aware of a global pattern
-            # or not
+            # Compute utility if agent has become aware of a global
+            # pattern or not
             if node['reflexivity'] < reflexivity_index:
-                utility = local_utility + global_utility - \
-                          local_utility * global_utility
+                # Utility with Rx
+                utility_with_rx = (local_utility + global_utility -
+                                   local_utility * global_utility)
+
+                # Make agents to wait before allowing
+                # them to use global utility
+                if parameters.get('use_time_delays', False):
+                    node['exposure'] += 1
+                    if node['exposure'] > node['time_delay']:
+                        utility = utility_with_rx
+                    else:
+                        utility = local_utility
+                else:
+                    utility = utility_with_rx
             else:
                 utility = local_utility
         else:
