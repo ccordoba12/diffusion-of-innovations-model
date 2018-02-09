@@ -43,6 +43,8 @@ def generate_initial_conditions(parameters):
     elif graph_type == 'powerlaw_cluster':
         G = nx.generators.powerlaw_cluster_graph(n_consumers, n_neighbors,
                                                  randomness)
+    elif graph_type == 'erdos_renyi':
+         G = nx.generators.erdos_renyi_graph(n_consumers, randomness)
     else:
         raise ValueError("Wrong or unknown graph type")
 
