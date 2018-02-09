@@ -166,8 +166,7 @@ multiplot_variable(plot_func=plot_adopters,
                    par_name=article_parameters[run['main_parameter']],
                    par_values=run['parameter_values'],
                    cumulative=run['cumulative'],
-                   filename=filename + '_adopters.png',
-                   ylim_top=None)
+                   filename=filename + '_adopters.png')
 
 # Plot adopters per utility and marketing
 multiplot_variable(plot_func=plot_adopters_type,
@@ -176,8 +175,7 @@ multiplot_variable(plot_func=plot_adopters_type,
                    par_name=article_parameters[run['main_parameter']],
                    par_values=run['parameter_values'],
                    cumulative=run['cumulative'],
-                   filename=filename + '_types.png',
-                   ylim_top=None)
+                   filename=filename + '_types.png')
 
 
 #==============================================================================

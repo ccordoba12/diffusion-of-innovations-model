@@ -14,7 +14,8 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import seaborn as sns
 
-from utils import compute_activation_time, get_values_from_compute_run
+from utils import (compute_activation_time, get_max_adopters,
+                   get_values_from_compute_run)
 
 
 if not os.name == 'nt':
@@ -171,8 +172,15 @@ def multiplot_variable(plot_func, multiple_data, set_of_params, par_name,
     """
     figsize = (8.5, 8.5)
     fontsize = 11
-
     fig, axes = plt.subplots(2, 2, figsize=figsize, sharex=True, sharey=True)
+
+    if cumulative:
+        max_consumers = [parameters['number_of_consumers']
+                         for parameters in set_of_params]
+        ylim_top = max(max_consumers)
+    else:
+        max_adopters = max([get_max_adopters(d) for d in multiple_data])
+        ylim_top = round(max_adopters) + 10
 
     for ax, d, v, p in zip(axes.flat, multiple_data, par_values, set_of_params):
         plot_func(data=d,
@@ -182,6 +190,7 @@ def multiplot_variable(plot_func, multiple_data, set_of_params, par_name,
                   par_value=v,
                   fontsize=fontsize,
                   cumulative=cumulative,
+                  ylim_top=ylim_top,
                   **kwargs)
 
     # Adjustments to plots

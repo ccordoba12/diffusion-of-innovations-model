@@ -275,3 +275,19 @@ def get_adopters_percentaje_upto_activation(data, parameters):
     percentaje = adopters_upto_activation/parameters['number_of_consumers']
 
     return percentaje * 100
+
+
+def get_max_adopters(data):
+    """
+    Get the mean maximum of adopters in a given run
+
+    data: Contains the output of compute_run.
+    """
+    # Get adopters
+    adopters = get_values_from_compute_run(data, with_reflexivity=True,
+                                           variable='adopters')
+
+    # Get the mean value in each time step for all runs
+    mean_per_time = np.mean(np.array(adopters), axis=0)
+
+    return np.max(mean_per_time)
