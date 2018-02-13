@@ -27,6 +27,8 @@ sns.set_style("whitegrid")
 def plot_adopters(data, parameters, axis,
                   par_name=None, par_value=None,
                   cumulative=False, fontsize=15,
+                  with_reflexivity=None,
+                  with_activation_time=True,
                   ylim_bottom=None,
                   ylim_top=None):
     """
@@ -37,6 +39,10 @@ def plot_adopters(data, parameters, axis,
     axis: Matplotlib axis to add this plot to.
     cumulative: Whether to plot the cumulative number of adopters or not
     fontsize: Font size for legends and tick marks.
+    with_reflexivity: For compatibility with plot_adopters_type.
+    with_activation_time: Wheter to plot activation time or not.
+    ylim_bottom: Bottom y-axis limit.
+    ylim_top: Top y-axis limit.
     """
     # Data to plot
     no_rx_data = get_values_from_compute_run(data, with_reflexivity=False,
@@ -52,7 +58,9 @@ def plot_adopters(data, parameters, axis,
     # Plots
     sns.tsplot(data=no_rx_data, condition='No Reflexivity', ax=axis)
     sns.tsplot(data=rx_data, color='m', condition='Reflexivity', ax=axis)
-    axis.axvline(x=activation_time, linestyle='--', linewidth=1, color='0.4')
+    if with_activation_time:
+        axis.axvline(x=activation_time, linestyle='--', linewidth=1,
+                     color='0.4')
 
     # Plot adjustments
     if par_name is not None and par_value is not None:
@@ -93,6 +101,8 @@ def plot_adopters_type(data, parameters, axis,
     fontsize: Font size for legends and tick marks.
     with_reflexivity: Get data with or without reflexivity.
     with_activation_time: Wheter to plot activation time or not.
+    ylim_bottom: Bottom y-axis limit.
+    ylim_top: Top y-axis limit.
     """
     # Data to plot
     utility = get_values_from_compute_run(data, with_reflexivity,
