@@ -27,6 +27,7 @@ sns.set_style("whitegrid")
 def plot_adopters(data, parameters, axis,
                   par_name=None, par_value=None,
                   cumulative=False, fontsize=15,
+                  ylim_bottom=None,
                   ylim_top=None):
     """
     Plot number of adopters against time.
@@ -61,7 +62,11 @@ def plot_adopters(data, parameters, axis,
     axis.set_xlabel('Time')
     axis.set_ylabel('N. of Adopters')
 
-    axis.set_ylim(bottom=0)
+    # Y-axis limits
+    if ylim_bottom is not None:
+        axis.set_ylim(bottom=ylim_bottom)
+    else:
+        axis.set_ylim(bottom=0)
     if ylim_top is not None:
         axis.set_ylim(top=ylim_top)
 
@@ -74,6 +79,7 @@ def plot_adopters_type(data, parameters, axis,
                        cumulative=False, fontsize=15,
                        with_reflexivity=True,
                        with_activation_time=True,
+                       ylim_bottom=None,
                        ylim_top=None):
     """
     Plot number of type of adopters against time.
@@ -116,7 +122,11 @@ def plot_adopters_type(data, parameters, axis,
     axis.set_xlabel('Time')
     axis.set_ylabel('N. of adopters')
 
-    axis.set_ylim(bottom=0)
+    # Y-axis limits
+    if ylim_bottom is not None:
+        axis.set_ylim(bottom=ylim_bottom)
+    else:
+        axis.set_ylim(bottom=0)
     if ylim_top is not None:
         axis.set_ylim(top=ylim_top)
 
