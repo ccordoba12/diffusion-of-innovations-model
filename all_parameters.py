@@ -54,6 +54,17 @@ graph_types = {1: 'small_world',
                4: 'erdos_renyi'}
 
 
+# =============================================================================
+# Control output of the simulation
+# =============================================================================
+output = dict(
+    plot_adopters_and_global_utility = False,
+    plot_adopters = True,
+    plot_adopters_type = False,
+    save_adopters_percentage = False
+)
+
+
 #==============================================================================
 # Parameters for the model
 #==============================================================================

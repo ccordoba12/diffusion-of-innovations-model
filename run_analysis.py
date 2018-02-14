@@ -20,7 +20,7 @@ from algorithm import compute_run, generate_parameters
 from plots import (multiplot_variable, plot_adopters, plot_adopters_type,
                    multiplot_adopters_and_global_utility)
 from all_parameters import (PARAMETERS_FILE, RESULTS_DIR, RERUNS_DIR,
-                            SAVED_RESULTS_DIR)
+                            SAVED_RESULTS_DIR, output)
 from utils import (load_parameters_from_file,
                    get_adopters_percentaje_upto_activation)
 
@@ -149,41 +149,46 @@ else:
 
 
 # Generate plots
-#multiplot_adopters_and_global_utility(
-#    multiple_data=data,
-#    set_of_params=set_of_parameters,
-#    par_name=article_parameters[run['main_parameter']],
-#    par_values=run['parameter_values'],
-#    cumulative=run['cumulative'],
-#    filename=filename + '.png'
-#)
-
+if output['plot_adopters_and_global_utility']:
+    multiplot_adopters_and_global_utility(
+        multiple_data=data,
+        set_of_params=set_of_parameters,
+        par_name=article_parameters[run['main_parameter']],
+        par_values=run['parameter_values'],
+        cumulative=run['cumulative'],
+        filename=filename + '.png'
+    )
 
 # Plot adopters with and without reflexivity
-multiplot_variable(plot_func=plot_adopters,
-                   multiple_data=data,
-                   set_of_params=set_of_parameters,
-                   par_name=article_parameters[run['main_parameter']],
-                   par_values=run['parameter_values'],
-                   cumulative=run['cumulative'],
-                   filename=filename + '_adopters.png')
+if output['plot_adopters']:
+    multiplot_variable(plot_func=plot_adopters,
+                       multiple_data=data,
+                       set_of_params=set_of_parameters,
+                       par_name=article_parameters[run['main_parameter']],
+                       par_values=run['parameter_values'],
+                       cumulative=run['cumulative'],
+                       filename=filename + '_adopters.png',
+                       ylim_bottom=None,
+                       with_activation_time=True)
 
 # Plot adopters per utility and marketing
-multiplot_variable(plot_func=plot_adopters_type,
-                   multiple_data=data,
-                   set_of_params=set_of_parameters,
-                   par_name=article_parameters[run['main_parameter']],
-                   par_values=run['parameter_values'],
-                   cumulative=run['cumulative'],
-                   filename=filename + '_types.png')
+if output['plot_adopters_type']:
+    multiplot_variable(plot_func=plot_adopters_type,
+                       multiple_data=data,
+                       set_of_params=set_of_parameters,
+                       par_name=article_parameters[run['main_parameter']],
+                       par_values=run['parameter_values'],
+                       cumulative=run['cumulative'],
+                       filename=filename + '_types.png')
 
 
 #==============================================================================
 # Save adopters percentaje up to activation to a csv file
 #==============================================================================
-with open(filename + '.csv', 'wb') as csvfile:
-    writer = csv.writer(csvfile)
-    writer.writerow([run['main_parameter'], 'Percentaje'])
-    for d, p, v in zip(data, set_of_parameters, run['parameter_values']):
-        percentaje = get_adopters_percentaje_upto_activation(d, p)
-        writer.writerow([v, percentaje])
+if output['save_adopters_percentage']:
+    with open(filename + '.csv', 'wb') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow([run['main_parameter'], 'Percentaje'])
+        for d, p, v in zip(data, set_of_parameters, run['parameter_values']):
+            percentaje = get_adopters_percentaje_upto_activation(d, p)
+            writer.writerow([v, percentaje])
