@@ -6,6 +6,8 @@ Created on Sat Dec 10 10:45:16 2016
 @author: carlos
 """
 
+from __future__ import division
+
 import os
 
 import numpy as np
@@ -186,13 +188,18 @@ def multiplot_variable(plot_func, multiple_data, set_of_params, par_name,
     set_of_params: Set of parameters.
     par_name: Name of the main parameter that we are varying in the simulation.
     par_values: List of values for the main parameter.
-                It can only contain 4 values.
     cumulative: Whether to plot cumulative curvers or not.
     filename: Name of the file to save this figure to.
     """
     figsize = (8.5, 8.5)
     fontsize = 11
-    fig, axes = plt.subplots(2, 2, figsize=figsize, sharex=True, sharey=True)
+    nvalues = len(par_values)
+    if nvalues == 4:
+        ncols = 2
+    else:
+        ncols = int(np.ceil(nvalues/2))
+    fig, axes = plt.subplots(nrows=2, ncols=ncols, figsize=figsize,
+                             sharex=True, sharey=True)
 
     if cumulative:
         max_consumers = [parameters['number_of_consumers']
