@@ -226,6 +226,11 @@ def multiplot_variable(plot_func, multiple_data, set_of_params, par_name,
     for ax in axes[:,1]:
         ax.set_ylabel('')
 
+    # Hide last plot is nvalues is even
+    if nvalues % 2 == 1:
+        last_ax = axes.flat[-1]
+        last_ax.set_visible(False)
+
     if filename:
         fig.savefig(filename, dpi=300, bbox_inches='tight')
 
