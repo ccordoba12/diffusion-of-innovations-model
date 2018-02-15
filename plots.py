@@ -191,14 +191,28 @@ def multiplot_variable(plot_func, multiple_data, set_of_params, par_name,
     cumulative: Whether to plot cumulative curvers or not.
     filename: Name of the file to save this figure to.
     """
-    figsize = (8.5, 8.5)
-    fontsize = 11
     nvalues = len(par_values)
+    fontsize = 11
+
+    # Figure size
+    if nvalues == 4:
+        figsize = (8.5, 8.5)
+    else:
+        figsize = (16, 8.5)
+
+    # Number of rows
+    if nvalues < 9:
+        nrows = 2
+    else:
+        nrows = 3
+
+    # Number of columns
     if nvalues == 4:
         ncols = 2
     else:
-        ncols = int(np.ceil(nvalues/2))
-    fig, axes = plt.subplots(nrows=2, ncols=ncols, figsize=figsize,
+        ncols = int(np.ceil(nvalues/nrows))
+
+    fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize,
                              sharex=True, sharey=True)
 
     if cumulative:
