@@ -9,6 +9,7 @@ Created on Sat Dec 10 10:45:16 2016
 from __future__ import division
 
 import os
+import os.path as osp
 
 import numpy as np
 import matplotlib
@@ -345,7 +346,7 @@ def multiplot_adopters_and_global_utility(multiple_data, set_of_params,
     fig.savefig(filename, dpi=300, bbox_inches='tight')
 
 
-def plot_saddle_points_presence(csv_file):
+def plot_saddle_points_presence(csv_file, axis=None, with_legend=True):
     """
     Plot a heatmap of Beta vs. q that shows the presence
     or absence of saddle points.
@@ -356,7 +357,8 @@ def plot_saddle_points_presence(csv_file):
     figsize = (5.5, 5.5)
 
     fig = plt.figure(figsize=figsize)
-    axis = fig.add_subplot(111)
+    if axis is None:
+        axis = fig.add_subplot(111)
 
     # Loading the csv file with the data to be plotted
     df = pd.read_csv(csv_file)
@@ -367,15 +369,18 @@ def plot_saddle_points_presence(csv_file):
                 xticklabels=2, yticklabels=2, vmax=1.9, center=0.5, ax=axis)
 
     # Adjustments
-    axis.set_title('Saddle points presence', fontsize=fontsize)
+    fname = csv_file.split(osp.sep)[-1]
+    title = osp.splitext(fname)[0]
+    axis.set_title(title, fontsize=fontsize)
     axis.set_xlabel(r'$\beta$', fontsize=fontsize-1)
     axis.set_ylabel(r'$q$', fontsize=fontsize-1)
     axis.tick_params(axis='both', which='major', labelsize=fontsize-2)
 
     # Legend
-    collections = axis.collections[0]
-    colors = np.unique(collections.get_facecolors(), axis=0)
-    labels = ['Saddle points', 'Bending point', 'No saddle points']
-    patches = [mpatches.Patch(color=c, label=l) for c,l in zip(colors, labels)]
-    axis.legend(handles=patches, bbox_to_anchor=(1.02, 1), loc=2,
-                borderaxespad=0., fontsize=fontsize-1, handlelength=0.7)
+    if with_legend:
+        collections = axis.collections[0]
+        colors = np.unique(collections.get_facecolors(), axis=0)
+        labels = ['Saddle points', 'Bending point', 'No saddle points']
+        patches = [mpatches.Patch(color=c, label=l) for c,l in zip(colors, labels)]
+        axis.legend(handles=patches, bbox_to_anchor=(1.02, 1), loc=2,
+                    borderaxespad=0., fontsize=fontsize-1, handlelength=0.7)
