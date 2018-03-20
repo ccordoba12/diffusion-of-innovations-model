@@ -8,6 +8,7 @@ Created on Sat Dec 10 10:45:16 2016
 
 from __future__ import division
 
+import glob
 import os
 import os.path as osp
 
@@ -356,8 +357,8 @@ def plot_saddle_points_presence(csv_file, axis=None, with_legend=True):
     fontsize = 15
     figsize = (5.5, 5.5)
 
-    fig = plt.figure(figsize=figsize)
     if axis is None:
+        fig = plt.figure(figsize=figsize)
         axis = fig.add_subplot(111)
 
     # Loading the csv file with the data to be plotted
@@ -365,7 +366,7 @@ def plot_saddle_points_presence(csv_file, axis=None, with_legend=True):
     df = df.set_index('index')
 
     # Heatmap
-    sns.heatmap(df, cbar=False, square=True, cmap="YlGnBu", linewidths=0.05,
+    sns.heatmap(df, cbar=False, square=True, cmap="YlGnBu", linewidths=0.06,
                 xticklabels=2, yticklabels=2, vmax=1.9, center=0.5, ax=axis)
 
     # Adjustments
@@ -384,3 +385,34 @@ def plot_saddle_points_presence(csv_file, axis=None, with_legend=True):
         patches = [mpatches.Patch(color=c, label=l) for c,l in zip(colors, labels)]
         axis.legend(handles=patches, bbox_to_anchor=(1.02, 1), loc=2,
                     borderaxespad=0., fontsize=fontsize-1, handlelength=0.7)
+
+
+def multiplot_saddle_points_presence(csv_dir):
+    """Plot several saddle points presence plots"""
+    # Create subplots
+    figsize = (17, 5)
+    fig, axes = plt.subplots(nrows=1, ncols=3,
+                             figsize=figsize,
+                             sharex=False, sharey=False,
+                             gridspec_kw={'width_ratios': [5, 5, 5]})
+
+    # Get file names to plot
+    fnames = glob.glob(osp.join(csv_dir, '*.csv'))
+
+    for ax, fn in zip(axes.flat, fnames):
+        plot_saddle_points_presence(fn, axis=ax, with_legend=False)
+
+    # Adjustments
+    #for ax in axes.flat[1:]:
+    #    ax.set_ylabel('')
+
+    axis = axes.flat[-1]
+    collections = axis.collections[0]
+    colors = np.unique(collections.get_facecolors(), axis=0)
+    labels = ['Saddle points', 'Bending point', 'No saddle points']
+    patches = [mpatches.Patch(color=c, label=l) for c,l in zip(colors, labels)]
+    axis.legend(handles=patches, bbox_to_anchor=(1.08, 1), loc=2,
+                borderaxespad=0., fontsize=14, handlelength=0.7)
+
+    fig.savefig(osp.join(csv_dir, 'saddle-points.png'), dpi=300,
+                bbox_inches='tight')
