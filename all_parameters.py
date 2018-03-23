@@ -6,7 +6,7 @@ Parameters for the simulation
 
 import os.path as osp
 
-from utils import LOCATION
+from utilities import LOCATION
 
 #==============================================================================
 # Directories to save results

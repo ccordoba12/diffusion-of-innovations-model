@@ -20,8 +20,8 @@ import matplotlib.gridspec as gridspec
 import pandas as pd
 import seaborn as sns
 
-from utils import (compute_activation_time, get_max_adopters,
-                   get_values_from_compute_run)
+from utilities import (compute_activation_time, get_max_adopters,
+                       get_values_from_compute_run)
 
 
 if not os.name == 'nt':

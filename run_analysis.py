@@ -21,8 +21,8 @@ from plots import (multiplot_variable, plot_adopters, plot_adopters_type,
                    multiplot_adopters_and_global_utility)
 from all_parameters import (PARAMETERS_FILE, RESULTS_DIR, RERUNS_DIR,
                             SAVED_RESULTS_DIR, output)
-from utils import (load_parameters_from_file,
-                   get_adopters_percentaje_upto_activation)
+from utilities import (load_parameters_from_file,
+                       get_adopters_percentaje_upto_activation)
 
 
 #==============================================================================

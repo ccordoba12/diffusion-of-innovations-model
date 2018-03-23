@@ -12,8 +12,8 @@ import numpy as np
 import pandas as pd
 
 # Local imports
-from utils import (compute_global_utility, get_neighbors, is_adopter, logistic,
-                   set_seed, step)
+from utilities import (compute_global_utility, get_neighbors, is_adopter,
+                       logistic, set_seed, step)
 
 
 def generate_initial_conditions(parameters):
