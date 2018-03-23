@@ -30,13 +30,14 @@ if not os.name == 'nt':
 sns.set_style("whitegrid")
 
 
-def plot_adopters(data, parameters, axis,
+def plot_adopters(data, parameters, axis=None,
                   par_name=None, par_value=None,
                   cumulative=False, fontsize=15,
                   with_reflexivity=None,
                   with_activation_time=True,
                   ylim_bottom=None,
-                  ylim_top=None):
+                  ylim_top=None,
+                  filename=None):
     """
     Plot number of adopters against time.
 
@@ -49,6 +50,7 @@ def plot_adopters(data, parameters, axis,
     with_activation_time: Wheter to plot activation time or not.
     ylim_bottom: Bottom y-axis limit.
     ylim_top: Top y-axis limit.
+    filename: File name to save the plot to.
     """
     # Data to plot
     no_rx_data = get_values_from_compute_run(data, with_reflexivity=False,
@@ -60,6 +62,11 @@ def plot_adopters(data, parameters, axis,
     if cumulative:
         no_rx_data = map(np.cumsum, no_rx_data)
         rx_data = map(np.cumsum, rx_data)
+
+    if axis is None:
+        figsize = (5.5, 5.5)
+        fig = plt.figure(figsize=figsize)
+        axis = fig.add_subplot(111)
 
     # Plots
     sns.tsplot(data=no_rx_data, condition='No Reflexivity', ax=axis)
@@ -87,14 +94,18 @@ def plot_adopters(data, parameters, axis,
     axis.legend(loc='best', fontsize=fontsize-2)
     axis.tick_params(axis='both', which='major', labelsize=fontsize-2)
 
+    if filename is not None:
+        fig.savefig(filename, dpi=300, bbox_inches='tight')
 
-def plot_adopters_type(data, parameters, axis,
+
+def plot_adopters_type(data, parameters, axis=None,
                        par_name=None, par_value=None,
                        cumulative=False, fontsize=15,
                        with_reflexivity=True,
                        with_activation_time=True,
                        ylim_bottom=None,
-                       ylim_top=None):
+                       ylim_top=None,
+                       filename=None):
     """
     Plot number of type of adopters against time.
 
@@ -109,6 +120,7 @@ def plot_adopters_type(data, parameters, axis,
     with_activation_time: Wheter to plot activation time or not.
     ylim_bottom: Bottom y-axis limit.
     ylim_top: Top y-axis limit.
+    filename: File name to save the plot to.
     """
     # Data to plot
     utility = get_values_from_compute_run(data, with_reflexivity,
@@ -120,6 +132,12 @@ def plot_adopters_type(data, parameters, axis,
     if cumulative:
         utility = map(np.cumsum, utility)
         marketing = map(np.cumsum, marketing)
+
+    # Create axis if it doesn't exist
+    if axis is None:
+        figsize = (5.5, 5.5)
+        fig = plt.figure(figsize=figsize)
+        axis = fig.add_subplot(111)
 
     # Plots
     sns.tsplot(data=utility, condition='Utility', ax=axis,
@@ -148,6 +166,9 @@ def plot_adopters_type(data, parameters, axis,
 
     axis.legend(loc='best', fontsize=fontsize-2)
     axis.tick_params(axis='both', which='major', labelsize=fontsize-2)
+
+    if filename is not None:
+        fig.savefig(filename, dpi=300, bbox_inches='tight')
 
 
 def plot_global_utility(data, parameters, axis,
