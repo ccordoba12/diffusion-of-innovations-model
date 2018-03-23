@@ -97,7 +97,14 @@ try:
     dview = rc[:]
 except:
     try:
-        proc = subprocess.Popen(["ipcluster", "start", "-n", "8"])
+        # Get ipcluster path
+        ipcluster_path = osp.join('.', 'envs', 'default', '{}', 'ipcluster')
+        if os.name == 'nt':
+            ipcluster_path = ipcluster_path.format('Scripts')
+        else:
+            ipcluster_path = ipcluster_path.format('bin')
+
+        proc = subprocess.Popen([ipcluster_path, "start", "-n", "8"])
         atexit.register(proc.terminate)
         time.sleep(20)
         rc = Client()
@@ -113,10 +120,6 @@ except:
 set_of_parameters = generate_parameters(parameters,
                                         run['main_parameter'],
                                         run['parameter_values'])
-
-# To reload code
-get_ipython().magic('%reload_ext autoreload')
-get_ipython().magic('%autoreload 2')
 
 # Reset the engines
 if dview is not None:
