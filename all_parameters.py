@@ -73,17 +73,17 @@ output = dict(
 parameters = dict(
     number_of_consumers = 1000,
     social_influence = 0.6,
-    randomness = 1,
+    randomness = 0.1,
     activation_sharpness = 30,
     level = 1,
-    quality = 0.5,
+    quality = 0.6,
     initial_seed = 0.003,
     critical_mass = 0.5,
-    number_of_neighbors = 5,
+    number_of_neighbors = 4,
     marketing_effort = 0.03,
     graph_type = graph_types[1],
     use_time_delays = True,
-    time_delays_distro = [(1, 0.1), (12, 0.5), (30, 0.4)]
+    time_delays_distro = [(5, 0.1), (12, 0.5), (30, 0.4)]
 )
 
 
