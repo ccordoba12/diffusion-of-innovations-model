@@ -137,7 +137,6 @@ for p in set_of_parameters:
                          dview=dview)
     data.append(p_data)
 
-
 #==============================================================================
 # Plotting
 #==============================================================================
@@ -182,7 +181,9 @@ if output['plot_adopters_type']:
                        par_name=article_parameters[run['main_parameter']],
                        par_values=run['parameter_values'],
                        cumulative=run['cumulative'],
-                       filename=filename + '_types.png')
+                       filename=filename + '_types.png',
+                       ylim_bottom=None,
+                       with_activation_time=False)
 
 
 #==============================================================================
