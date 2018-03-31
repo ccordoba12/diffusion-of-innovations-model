@@ -64,7 +64,7 @@ def plot_adopters(data, parameters, axis=None,
         rx_data = map(np.cumsum, rx_data)
 
     if axis is None:
-        figsize = (5.5, 5.5)
+        figsize = (5.0, 4.5)
         fig = plt.figure(figsize=figsize)
         axis = fig.add_subplot(111)
 
@@ -135,7 +135,7 @@ def plot_adopters_type(data, parameters, axis=None,
 
     # Create axis if it doesn't exist
     if axis is None:
-        figsize = (5.5, 5.5)
+        figsize = (5.0, 4.5)
         fig = plt.figure(figsize=figsize)
         axis = fig.add_subplot(111)
 
