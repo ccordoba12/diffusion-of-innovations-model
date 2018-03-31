@@ -80,8 +80,8 @@ def plot_adopters(data, parameters, axis=None,
         axis.set_title(r'$%s = %s$' % (par_name, str(par_value)),
                        fontsize=fontsize)
 
-    axis.set_xlabel('Time')
-    axis.set_ylabel('N. of Adopters')
+    axis.set_xlabel('Time', fontsize=fontsize-1)
+    axis.set_ylabel('N. of Adopters', fontsize=fontsize-1)
 
     # Y-axis limits
     if ylim_bottom is not None:
@@ -153,8 +153,8 @@ def plot_adopters_type(data, parameters, axis=None,
         axis.set_title(r'$%s = %s$' % (par_name, str(par_value)),
                        fontsize=fontsize)
 
-    axis.set_xlabel('Time')
-    axis.set_ylabel('N. of adopters')
+    axis.set_xlabel('Time', fontsize=fontsize-1)
+    axis.set_ylabel('N. of adopters', fontsize=fontsize-1)
 
     # Y-axis limits
     if ylim_bottom is not None:
