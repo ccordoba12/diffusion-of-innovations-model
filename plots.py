@@ -30,14 +30,18 @@ if not os.name == 'nt':
 sns.set_style("whitegrid")
 
 
-def plot_adopters(data, parameters, axis=None,
-                  par_name=None, par_value=None,
-                  cumulative=False, fontsize=15,
-                  with_reflexivity=None,
-                  with_activation_time=True,
+def plot_adopters(data, parameters,
+                  axis=None,
+                  par_name=None,
+                  par_value=None,
+                  cumulative=False,
+                  fontsize=15,
+                  show_activation_time=True,
                   ylim_bottom=None,
                   ylim_top=None,
-                  filename=None):
+                  filename=None,
+                  show_legend=True,
+                  show_no_reflexivity=True):
     """
     Plot number of adopters against time.
 
@@ -46,11 +50,12 @@ def plot_adopters(data, parameters, axis=None,
     axis: Matplotlib axis to add this plot to.
     cumulative: Whether to plot the cumulative number of adopters or not
     fontsize: Font size for legends and tick marks.
-    with_reflexivity: For compatibility with plot_adopters_type.
-    with_activation_time: Wheter to plot activation time or not.
+    show_activation_time: Whether to plot activation time or not.
     ylim_bottom: Bottom y-axis limit.
     ylim_top: Top y-axis limit.
     filename: File name to save the plot to.
+    show_legend: Whether to show the legend or not.
+    show_no_reflexivity: Whether to show no reflexivity curves
     """
     # Data to plot
     no_rx_data = get_values_from_compute_run(data, with_reflexivity=False,
@@ -69,9 +74,10 @@ def plot_adopters(data, parameters, axis=None,
         axis = fig.add_subplot(111)
 
     # Plots
-    sns.tsplot(data=no_rx_data, condition='No Reflexivity', ax=axis)
+    if show_no_reflexivity:
+        sns.tsplot(data=no_rx_data, condition='No Reflexivity', ax=axis)
     sns.tsplot(data=rx_data, color='m', condition='Reflexivity', ax=axis)
-    if with_activation_time:
+    if show_activation_time:
         axis.axvline(x=activation_time, linestyle='--', linewidth=1,
                      color='0.4')
 
@@ -91,21 +97,28 @@ def plot_adopters(data, parameters, axis=None,
     if ylim_top is not None:
         axis.set_ylim(top=ylim_top)
 
-    axis.legend(loc='best', fontsize=fontsize-2)
+    if show_legend:
+        axis.legend(loc='best', fontsize=fontsize-2)
+    else:
+        axis.legend_.remove()
     axis.tick_params(axis='both', which='major', labelsize=fontsize-2)
 
     if filename is not None:
         fig.savefig(filename, dpi=300, bbox_inches='tight')
 
 
-def plot_adopters_type(data, parameters, axis=None,
-                       par_name=None, par_value=None,
-                       cumulative=False, fontsize=15,
+def plot_adopters_type(data, parameters,
+                       axis=None,
+                       par_name=None,
+                       par_value=None,
+                       cumulative=False,
+                       fontsize=15,
                        with_reflexivity=True,
-                       with_activation_time=True,
+                       show_activation_time=True,
                        ylim_bottom=None,
                        ylim_top=None,
-                       filename=None):
+                       filename=None,
+                       show_legend=True):
     """
     Plot number of type of adopters against time.
 
@@ -117,10 +130,11 @@ def plot_adopters_type(data, parameters, axis=None,
     cumulative: Whether to plot the cumulative number of adopters or not.
     fontsize: Font size for legends and tick marks.
     with_reflexivity: Get data with or without reflexivity.
-    with_activation_time: Wheter to plot activation time or not.
+    show_activation_time: Whether to plot activation time or not.
     ylim_bottom: Bottom y-axis limit.
     ylim_top: Top y-axis limit.
     filename: File name to save the plot to.
+    show_legend: Whether to show legend.
     """
     # Data to plot
     utility = get_values_from_compute_run(data, with_reflexivity,
@@ -144,7 +158,7 @@ def plot_adopters_type(data, parameters, axis=None,
                color=sns.xkcd_rgb["tomato"])
     sns.tsplot(data=marketing, condition='Marketing',
                ax=axis, color=sns.xkcd_rgb["soft purple"])
-    if with_activation_time:
+    if show_activation_time:
         axis.axvline(x=activation_time, linestyle='--', linewidth=1,
                      color='0.4')
 
@@ -164,7 +178,10 @@ def plot_adopters_type(data, parameters, axis=None,
     if ylim_top is not None:
         axis.set_ylim(top=ylim_top)
 
-    axis.legend(loc='best', fontsize=fontsize-2)
+    if show_legend:
+        axis.legend(loc='best', fontsize=fontsize-2)
+    else:
+        axis.legend_.remove()
     axis.tick_params(axis='both', which='major', labelsize=fontsize-2)
 
     if filename is not None:
