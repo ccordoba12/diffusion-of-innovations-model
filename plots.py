@@ -404,7 +404,7 @@ def plot_saddle_points_presence(csv_file, axis=None, with_legend=True):
     df = df.set_index('index')
 
     # Heatmap
-    sns.heatmap(df, cbar=False, square=True, cmap="YlGnBu", linewidths=0.06,
+    sns.heatmap(df, cbar=False, square=True, cmap="YlGnBu", linewidths=0.01,
                 xticklabels=2, yticklabels=2, vmax=1.9, center=0.5, ax=axis)
 
     # Adjustments
@@ -428,7 +428,7 @@ def plot_saddle_points_presence(csv_file, axis=None, with_legend=True):
 def multiplot_saddle_points_presence(csv_dir):
     """Plot several saddle points presence plots"""
     # Create subplots
-    figsize = (17, 5)
+    figsize = (16.7, 5)
     fig, axes = plt.subplots(nrows=1, ncols=3,
                              figsize=figsize,
                              sharex=False, sharey=False,
@@ -449,7 +449,7 @@ def multiplot_saddle_points_presence(csv_dir):
     colors = np.unique(collections.get_facecolors(), axis=0)
     labels = ['Saddle points', 'Bending point', 'No saddle points']
     patches = [mpatches.Patch(color=c, label=l) for c,l in zip(colors, labels)]
-    axis.legend(handles=patches, bbox_to_anchor=(1.08, 1), loc=2,
+    axis.legend(handles=patches, bbox_to_anchor=(1.05, 1), loc=2,
                 borderaxespad=0., fontsize=14, handlelength=0.7)
 
     fig.savefig(osp.join(csv_dir, 'saddle-points.png'), dpi=300,
