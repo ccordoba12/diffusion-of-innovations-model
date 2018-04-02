@@ -171,7 +171,7 @@ if output['plot_adopters']:
                        cumulative=run['cumulative'],
                        filename=filename + '_adopters.png',
                        ylim_bottom=None,
-                       with_activation_time=True)
+                       show_activation_time=True)
 
 # Plot adopters per utility and marketing
 if output['plot_adopters_type']:
@@ -183,7 +183,7 @@ if output['plot_adopters_type']:
                        cumulative=run['cumulative'],
                        filename=filename + '_types.png',
                        ylim_bottom=None,
-                       with_activation_time=False)
+                       show_activation_time=False)
 
 
 #==============================================================================
