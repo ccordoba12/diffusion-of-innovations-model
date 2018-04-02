@@ -237,19 +237,25 @@ def multiplot_variable(plot_func, multiple_data, set_of_params, par_name,
     fontsize = 11
 
     # Figure size
-    if nvalues == 4:
+    if nvalues < 4:
+        figsize = (15, 4.5)
+    elif nvalues == 4:
         figsize = (8.5, 8.5)
     else:
         figsize = (16, 8.5)
 
     # Number of rows
-    if nvalues < 9:
+    if nvalues < 4:
+        nrows = 1
+    elif nvalues < 9:
         nrows = 2
     else:
         nrows = 3
 
     # Number of columns
-    if nvalues == 4:
+    if nvalues < 4:
+        ncols = nvalues
+    elif nvalues == 4:
         ncols = 2
     else:
         ncols = int(np.ceil(nvalues/nrows))
@@ -277,13 +283,13 @@ def multiplot_variable(plot_func, multiple_data, set_of_params, par_name,
                   **kwargs)
 
     # Adjustments to plots
-    for ax in axes[0]:
+    for ax in (axes[0] if nrows > 1 else []):
         ax.set_xlabel('')
-    for ax in axes[:,1]:
+    for ax in (axes[:,1] if nrows > 1 else axes[1:]):
         ax.set_ylabel('')
 
-    # Hide last plot is nvalues is even
-    if nvalues % 2 == 1:
+    # Hide last plot is nvalues is even and nrows > 1
+    if nrows > 1 and nvalues % 2 == 1:
         last_ax = axes.flat[-1]
         last_ax.set_visible(False)
 
