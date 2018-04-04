@@ -401,7 +401,7 @@ def plot_saddle_points_presence(csv_file, axis=None, with_legend=True):
 
     cvs_file: File that contains the saddle point observations.
     """
-    fontsize = 15
+    fontsize = 16
     figsize = (5.5, 5.5)
 
     if axis is None:
@@ -413,7 +413,7 @@ def plot_saddle_points_presence(csv_file, axis=None, with_legend=True):
     df = df.set_index('index')
 
     # Heatmap
-    sns.heatmap(df, cbar=False, square=True, cmap="YlGnBu", linewidths=0.01,
+    sns.heatmap(df, cbar=False, square=True, cmap="YlGnBu", linewidths=0.06,
                 xticklabels=2, yticklabels=2, vmax=1.9, center=0.5, ax=axis)
 
     # Adjustments
@@ -440,7 +440,7 @@ def multiplot_saddle_points_presence(csv_dir):
     figsize = (16.7, 5)
     fig, axes = plt.subplots(nrows=1, ncols=3,
                              figsize=figsize,
-                             sharex=False, sharey=False,
+                             sharex=False, sharey=True,
                              gridspec_kw={'width_ratios': [5, 5, 5]})
 
     # Get file names to plot
@@ -450,8 +450,8 @@ def multiplot_saddle_points_presence(csv_dir):
         plot_saddle_points_presence(fn, axis=ax, with_legend=False)
 
     # Adjustments
-    #for ax in axes.flat[1:]:
-    #    ax.set_ylabel('')
+    for ax in axes[1:]:
+        ax.set_ylabel('')
 
     axis = axes.flat[-1]
     collections = axis.collections[0]
@@ -461,5 +461,5 @@ def multiplot_saddle_points_presence(csv_dir):
     axis.legend(handles=patches, bbox_to_anchor=(1.05, 1), loc=2,
                 borderaxespad=0., fontsize=14, handlelength=0.7)
 
-    fig.savefig(osp.join(csv_dir, 'saddle-points.png'), dpi=300,
+    fig.savefig(osp.join(csv_dir, 'saddle-points.svg'), dpi=300,
                 bbox_inches='tight')
