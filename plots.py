@@ -234,11 +234,14 @@ def multiplot_variable(plot_func, multiple_data, set_of_params, par_name,
     filename: Name of the file to save this figure to.
     """
     nvalues = len(par_values)
-    fontsize = 11
+    if nvalues < 4:
+        fontsize = 13
+    else:
+        fontsize = 11
 
     # Figure size
     if nvalues < 4:
-        figsize = (15, 4.5)
+        figsize = (15, 4.0)
     elif nvalues == 4:
         figsize = (8.5, 8.5)
     else:
