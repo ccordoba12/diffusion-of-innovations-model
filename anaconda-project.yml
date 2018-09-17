@@ -59,8 +59,7 @@ packages:
 - tornado=4.5.3
 - pyzmq=16.0.3
 # For Spyder
-- cloudpickle
-- chardet
+- spyder-kernels
 
 #
 # In the channels section, list any Conda channel URLs to be searched

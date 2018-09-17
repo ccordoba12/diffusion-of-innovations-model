@@ -1,14 +1,7 @@
 # Reflexivity in a diffusion of innovations model
 
-This code tries to replicate the diffusion of innovations model present in
-
-> *Diffusion dynamics in small-world networks with heterogeneous consumers*
-from Delre, Sebastiano A., Jager, Wander and Janssen, Marco A.,
-Computational and Mathematical Organization Theory, **13**, 2, 2007.
-
-with some modifications.
-
-It also adds new features that try to introduce reflexivity on it.
+Source code for the article "Reflexivity in a diffusion of innovations model"
+by Carlos Cordoba and Cesar García-Díaz.
 
 
 ## Parameters
@@ -26,13 +19,21 @@ corresponding variables in the article:
 * Critical mass of adopters: $M_{c}$
 * Marketing effort: $e_{1}$
 * Level: $L$
+* Time delay distribution: $f(d)$
 
 
-## How to run this model
+## How to run this code
 
-1. Set model parameters for a given run in `all_parameters.py`.
-2. Run `run_analysis.py`
-3. The results are several plots, a json file with the parameters of simulation
+1. Install Anaconda
+2. Install `anaconda-project` with `conda install anaconda-project`.
+3. Clone this repository and cd to its root.
+4. Run in a system terminal (cmd.exe): `anaconda-project run` to
+   install its dependencies (this code has only been tested on
+   Windows).
+5. Run `activate envs\default`
+6. Set the model parameters for a given run in `all_parameters.py`.
+7. Run `python run_analysis.py`
+8. The results are several plots, a json file with the parameters of simulation
    and a csv file with the percentage of adopters when reflexivity is activated
    in the system. All are saved in a *Results* subdirectory in this same
    directory.
