@@ -99,6 +99,8 @@ def evolution_step(graph, parameters, test=False):
     # To save the adopters at this time step
     adopters_at_step = []
     adopters_by_utility = 0
+    adopters_by_local_utility = 0
+    adopters_by_global_utility = 0
     adopters_by_marketing = 0
     global_utility = 0
     
@@ -160,7 +162,10 @@ def evolution_step(graph, parameters, test=False):
                              (1 - parameters['social_influence']) * individual_preference
         else:
             local_utility = 0
-        
+
+        # Track if the agent used global utility to adopt
+        use_global_utility = False
+
         # -- Compute utility if reflexivity is on or off
         if parameters['reflexivity']:
             # Compute utility if agent has become aware of a global
@@ -176,9 +181,11 @@ def evolution_step(graph, parameters, test=False):
                     node['exposure'] += 1
                     if node['exposure'] > node['time_delay']:
                         utility = utility_with_rx
+                        use_global_utility = True
                     else:
                         utility = local_utility
                 else:
+                    use_global_utility = True
                     utility = utility_with_rx
             else:
                 utility = local_utility
@@ -190,6 +197,10 @@ def evolution_step(graph, parameters, test=False):
         if utility >= node['minimal_utility']:
             adopters_at_step.append(node_index)
             adopters_by_utility += 1
+            if use_global_utility:
+                adopters_by_global_utility += 1
+            else:
+                adopters_by_local_utility += 1
         # or marketing influences the agent
         elif parameters['marketing_effort'] and \
           len(adopters_among_neighbors) > 0:
@@ -207,7 +218,9 @@ def evolution_step(graph, parameters, test=False):
     data = {'adopters': len(adopters_at_step),
             'adopters_by_utility': adopters_by_utility,
             'adopters_by_marketing': adopters_by_marketing,
-            'global_utility': global_utility}
+            'global_utility': global_utility,
+            'adopters_by_global_utility': adopters_by_global_utility,
+            'adopters_by_local_utility': adopters_by_local_utility}
 
     return data
 
