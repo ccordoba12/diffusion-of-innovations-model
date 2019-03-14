@@ -118,7 +118,8 @@ def plot_adopters_type(data, parameters,
                        ylim_bottom=None,
                        ylim_top=None,
                        filename=None,
-                       show_legend=True):
+                       show_legend=True,
+                       types=None):
     """
     Plot number of type of adopters against time.
 
@@ -135,17 +136,27 @@ def plot_adopters_type(data, parameters,
     ylim_top: Top y-axis limit.
     filename: File name to save the plot to.
     show_legend: Whether to show legend.
+    types: List of types to plot, e.g. ['utility', 'marketing']
     """
+    # Colors associated to each type
+    colors = ["#D55E00", "#009E73", "#56B4E9", "#CC79A7"]
+
+    # Types to plot
+    if types is None:
+        types = ['utility', 'marketing']
+
     # Data to plot
-    utility = get_values_from_compute_run(data, with_reflexivity,
-                                          variable='adopters_by_utility')
-    marketing = get_values_from_compute_run(data, with_reflexivity,
-                                            variable='adopters_by_marketing')
+    data_for_types = []
+    for t in types:
+        type_field = 'adopters_by_%s' % t
+        values = get_values_from_compute_run(data, with_reflexivity,
+                                             variable=type_field)
+        data_for_types.append(values)
+
     activation_time = compute_activation_time(data, parameters)
 
     if cumulative:
-        utility = map(np.cumsum, utility)
-        marketing = map(np.cumsum, marketing)
+        data_for_types = [map(np.cumsum, d) for d in data_for_types]
 
     # Create axis if it doesn't exist
     if axis is None:
@@ -154,10 +165,12 @@ def plot_adopters_type(data, parameters,
         axis = fig.add_subplot(111)
 
     # Plots
-    sns.tsplot(data=utility, condition='Utility', ax=axis,
-               color=sns.xkcd_rgb["tomato"])
-    sns.tsplot(data=marketing, condition='Marketing',
-               ax=axis, color=sns.xkcd_rgb["soft purple"])
+    for i in range(len(data_for_types)):
+        type_name = types[i].split('_')
+        type_name = ' '.join(type_name).capitalize()
+        sns.tsplot(data=data_for_types[i], condition=type_name, ax=axis,
+                   color=colors[i])
+
     if show_activation_time:
         axis.axvline(x=activation_time, linestyle='--', linewidth=1,
                      color='0.4')
