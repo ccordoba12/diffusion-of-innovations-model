@@ -165,10 +165,10 @@ def compute_global_utility_activation_value(parameters):
     """
     step = 1e-5
     for global_utility in np.arange(0, parameters['critical_mass'], step):
-        reflexivity_index = logistic(global_utility,
-                                     parameters['activation_sharpness'],
-                                     parameters['critical_mass'])
-        if reflexivity_index > step and global_utility > 0.01:
+        emergence_factor = logistic(global_utility,
+                                    parameters['activation_sharpness'],
+                                    parameters['critical_mass'])
+        if emergence_factor > step and global_utility > 0.01:
             return global_utility
 
 

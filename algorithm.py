@@ -89,7 +89,7 @@ def evolution_step(graph, parameters, test=False):
     parameters: Dictionary that contains the parameters that control
     the evolution.
     test: Test with a step function instead of the logistic one for
-    the reflexivity_index.
+    the emergence_factor.
 
     Returns: A dictionary with data collected at each step (e.g.
              total number of adopters, adopters by utility and
@@ -115,11 +115,9 @@ def evolution_step(graph, parameters, test=False):
             activation = step
         
         # Compute reflexivity index
-        reflexivity_index = activation(global_utility,
-                                       parameters['activation_sharpness'],
-                                       parameters['critical_mass'])
-        #print(reflexivity_index)
-    
+        emergence_factor = activation(global_utility,
+                                      parameters['activation_sharpness'],
+                                      parameters['critical_mass'])
     
     # Determine which agents adopt
     for node_index in graph.nodes():
@@ -167,7 +165,7 @@ def evolution_step(graph, parameters, test=False):
         if parameters['reflexivity']:
             # Compute utility if agent has become aware of a global
             # pattern or not
-            if node['reflexivity'] < reflexivity_index:
+            if node['reflexivity'] < emergence_factor:
                 # Utility with Rx
                 utility_with_rx = (local_utility + global_utility -
                                    local_utility * global_utility)
