@@ -428,7 +428,7 @@ def plot_saddle_points_presence(csv_file, axis=None, with_legend=True):
     if with_legend:
         collections = axis.collections[0]
         colors = np.unique(collections.get_facecolors(), axis=0)
-        labels = ['Saddle points', 'Bending point', 'No saddle points']
+        labels = ['Slowdowns', 'Bending region', 'No slowdown']
         patches = [mpatches.Patch(color=c, label=l) for c,l in zip(colors, labels)]
         axis.legend(handles=patches, bbox_to_anchor=(1.02, 1), loc=2,
                     borderaxespad=0., fontsize=fontsize-1, handlelength=0.7)
@@ -456,7 +456,7 @@ def multiplot_saddle_points_presence(csv_dir):
     axis = axes.flat[-1]
     collections = axis.collections[0]
     colors = np.unique(collections.get_facecolors(), axis=0)
-    labels = ['Saddle points', 'Bending point', 'No saddle points']
+    labels = ['Slowdowns', 'Bending region', 'No slowdowns']
     patches = [mpatches.Patch(color=c, label=l) for c,l in zip(colors, labels)]
     axis.legend(handles=patches, bbox_to_anchor=(1.05, 1), loc=2,
                 borderaxespad=0., fontsize=14, handlelength=0.7)
