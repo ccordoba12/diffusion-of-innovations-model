@@ -119,7 +119,8 @@ def plot_adopters_type(data, parameters,
                        ylim_top=None,
                        filename=None,
                        show_legend=True,
-                       types=None):
+                       types=None,
+                       include_adopters=False):
     """
     Plot number of type of adopters against time.
 
@@ -137,6 +138,7 @@ def plot_adopters_type(data, parameters,
     filename: File name to save the plot to.
     show_legend: Whether to show legend.
     types: List of types to plot, e.g. ['utility', 'marketing']
+    include_adopters: Include total number of adopters in the plot or not.
     """
     # Colors associated to each type
     colors = ["#D55E00", "#009E73", "#56B4E9", "#CC79A7"]
@@ -153,10 +155,18 @@ def plot_adopters_type(data, parameters,
                                              variable=type_field)
         data_for_types.append(values)
 
+    adopters = None
+    if include_adopters:
+        adopters = get_values_from_compute_run(data, with_reflexivity,
+                                               variable='adopters')
+
     activation_time = compute_activation_time(data, parameters)
 
     if cumulative:
         data_for_types = [map(np.cumsum, d) for d in data_for_types]
+
+        if adopters is not None:
+            adopters = map(np.cumsum, adopters)
 
     # Create axis if it doesn't exist
     if axis is None:
@@ -170,6 +180,9 @@ def plot_adopters_type(data, parameters,
         type_name = ' '.join(type_name).capitalize()
         sns.tsplot(data=data_for_types[i], condition=type_name, ax=axis,
                    color=colors[i])
+
+    if adopters is not None:
+        sns.tsplot(data=adopters, color="m", condition='Total', ax=axis)
 
     if show_activation_time:
         axis.axvline(x=activation_time, linestyle='--', linewidth=1,

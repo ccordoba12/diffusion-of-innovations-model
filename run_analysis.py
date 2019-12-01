@@ -183,8 +183,9 @@ if output['plot_adopters_type']:
                        cumulative=run['cumulative'],
                        filename=filename + '_types.png',
                        ylim_bottom=None,
-                       show_activation_time=False,
-                       types=['global_utility', 'local_utility'])
+                       show_activation_time=True,
+                       types=['local_or_global', 'local', 'marketing'],
+                       include_adopters=True)
 
 
 #==============================================================================
