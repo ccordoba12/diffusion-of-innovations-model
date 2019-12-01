@@ -100,7 +100,7 @@ def evolution_step(graph, parameters, test=False):
     adopters_at_step = []
     adopters_by_utility = 0
     adopters_by_local_utility = 0
-    adopters_by_global_utility = 0
+    adopters_by_local_or_global_utility = 0
     adopters_by_marketing = 0
     global_utility = 0
     
@@ -198,7 +198,7 @@ def evolution_step(graph, parameters, test=False):
             adopters_at_step.append(node_index)
             adopters_by_utility += 1
             if use_global_utility:
-                adopters_by_global_utility += 1
+                adopters_by_local_or_global_utility += 1
             else:
                 adopters_by_local_utility += 1
         # or marketing influences the agent
@@ -219,8 +219,8 @@ def evolution_step(graph, parameters, test=False):
             'adopters_by_utility': adopters_by_utility,
             'adopters_by_marketing': adopters_by_marketing,
             'global_utility': global_utility,
-            'adopters_by_global_utility': adopters_by_global_utility,
-            'adopters_by_local_utility': adopters_by_local_utility}
+            'adopters_by_local_or_global': adopters_by_local_or_global_utility,
+            'adopters_by_local': adopters_by_local_utility}
 
     return data
 
