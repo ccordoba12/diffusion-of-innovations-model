@@ -25,6 +25,9 @@ from utilities import (compute_activation_time, get_max_adopters,
 sns.set_style("whitegrid")
 
 
+# =============================================================================
+# Single plots
+# =============================================================================
 def plot_adopters(data, parameters,
                   axis=None,
                   par_name=None,
@@ -240,6 +243,49 @@ def plot_global_utility(data, parameters, axis,
     axis.axvline(x=activation_time, linestyle='--', linewidth=1, color='0.4')
 
 
+def plot_saddle_points_presence(csv_file, axis=None, with_legend=True):
+    """
+    Plot a heatmap of Beta vs. q that shows the presence
+    or absence of saddle points.
+
+    cvs_file: File that contains the saddle point observations.
+    """
+    fontsize = 16
+    figsize = (5.5, 5.5)
+
+    if axis is None:
+        fig = plt.figure(figsize=figsize)
+        axis = fig.add_subplot(111)
+
+    # Loading the csv file with the data to be plotted
+    df = pd.read_csv(csv_file)
+    df = df.set_index('index')
+
+    # Heatmap
+    sns.heatmap(df, cbar=False, square=True, cmap="YlGnBu", linewidths=0.06,
+                xticklabels=2, yticklabels=2, vmax=1.9, center=0.5, ax=axis)
+
+    # Adjustments
+    fname = csv_file.split(osp.sep)[-1]
+    title = osp.splitext(fname)[0]
+    axis.set_title(title, fontsize=fontsize)
+    axis.set_xlabel(r'$\beta$', fontsize=fontsize-1)
+    axis.set_ylabel(r'$q$', fontsize=fontsize-1)
+    axis.tick_params(axis='both', which='major', labelsize=fontsize-2)
+
+    # Legend
+    if with_legend:
+        collections = axis.collections[0]
+        colors = np.unique(collections.get_facecolors(), axis=0)
+        labels = ['Slowdowns', 'Bending region', 'No slowdown']
+        patches = [mpatches.Patch(color=c, label=l) for c,l in zip(colors, labels)]
+        axis.legend(handles=patches, bbox_to_anchor=(1.02, 1), loc=2,
+                    borderaxespad=0., fontsize=fontsize-1, handlelength=0.7)
+
+
+# =============================================================================
+# Multiple plots
+# =============================================================================
 def multiplot_variable(plot_func, multiple_data, set_of_params, par_name,
                        par_values, cumulative, filename=None, **kwargs):
     """
@@ -413,46 +459,6 @@ def multiplot_adopters_and_global_utility(multiple_data, set_of_params,
             top_ylim = ax_adopters.get_ylim()[1]
 
     fig.savefig(filename, dpi=300, bbox_inches='tight')
-
-
-def plot_saddle_points_presence(csv_file, axis=None, with_legend=True):
-    """
-    Plot a heatmap of Beta vs. q that shows the presence
-    or absence of saddle points.
-
-    cvs_file: File that contains the saddle point observations.
-    """
-    fontsize = 16
-    figsize = (5.5, 5.5)
-
-    if axis is None:
-        fig = plt.figure(figsize=figsize)
-        axis = fig.add_subplot(111)
-
-    # Loading the csv file with the data to be plotted
-    df = pd.read_csv(csv_file)
-    df = df.set_index('index')
-
-    # Heatmap
-    sns.heatmap(df, cbar=False, square=True, cmap="YlGnBu", linewidths=0.06,
-                xticklabels=2, yticklabels=2, vmax=1.9, center=0.5, ax=axis)
-
-    # Adjustments
-    fname = csv_file.split(osp.sep)[-1]
-    title = osp.splitext(fname)[0]
-    axis.set_title(title, fontsize=fontsize)
-    axis.set_xlabel(r'$\beta$', fontsize=fontsize-1)
-    axis.set_ylabel(r'$q$', fontsize=fontsize-1)
-    axis.tick_params(axis='both', which='major', labelsize=fontsize-2)
-
-    # Legend
-    if with_legend:
-        collections = axis.collections[0]
-        colors = np.unique(collections.get_facecolors(), axis=0)
-        labels = ['Slowdowns', 'Bending region', 'No slowdown']
-        patches = [mpatches.Patch(color=c, label=l) for c,l in zip(colors, labels)]
-        axis.legend(handles=patches, bbox_to_anchor=(1.02, 1), loc=2,
-                    borderaxespad=0., fontsize=fontsize-1, handlelength=0.7)
 
 
 def multiplot_saddle_points_presence(csv_dir):
