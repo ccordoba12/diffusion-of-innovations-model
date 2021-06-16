@@ -490,3 +490,113 @@ def multiplot_saddle_points_presence(csv_dir):
 
     fig.savefig(osp.join(csv_dir, 'saddle-points.svg'), dpi=300,
                 bbox_inches='tight')
+
+
+# =============================================================================
+# Others
+# =============================================================================
+def plot_adopters_conceptual_paper(
+    data,
+    parameters,
+    axis=None,
+    par_name=None,
+    par_value=None,
+    cumulative=False,
+    fontsize=15,
+    show_activation_time=True,
+    ylim_bottom=None,
+    ylim_top=None,
+    filename=None,
+    show_legend=True,
+    show_no_reflexivity=True):
+    """
+    Plot number of adopters against time for the conceptual paper.
+
+    data: contains the output of compute_run.
+    parameters: Parameters of the run.
+    axis: Matplotlib axis to add this plot to.
+    cumulative: Whether to plot the cumulative number of adopters or not
+    fontsize: Font size for legends and tick marks.
+    show_activation_time: Whether to plot activation time or not.
+    ylim_bottom: Bottom y-axis limit.
+    ylim_top: Top y-axis limit.
+    filename: File name to save the plot to.
+    show_legend: Whether to show the legend or not.
+    show_no_reflexivity: Whether to show no reflexivity curves
+
+    Notes
+    -----
+    Run this function with the following command:
+        plot_adopters_conceptual_paper(
+            data[0],
+            set_of_parameters[0],
+            show_activation_time=False,
+            filename='rx-results.png',
+            fontsize=16)
+
+    `data` and `set_of_parameters` come from running the model with
+    run_analysis.py.
+    """
+    # Remove style used for other plots because it doesn't apply for this
+    # one.
+    sns.set_style('ticks')
+
+    # Data to plot
+    no_rx_data = get_values_from_compute_run(data, with_reflexivity=False,
+                                             variable='adopters')
+    rx_data = get_values_from_compute_run(data, with_reflexivity=True,
+                                          variable='adopters')
+    activation_time = compute_activation_time(data, parameters)
+
+    if cumulative:
+        no_rx_data = map(np.cumsum, no_rx_data)
+        rx_data = map(np.cumsum, rx_data)
+
+    if axis is None:
+        figsize = (8.8, 4.95)
+        fig = plt.figure(figsize=figsize)
+        axis = fig.add_subplot(111)
+
+    # Plots
+    if show_no_reflexivity:
+        sns.tsplot(data=no_rx_data, condition='No Reflexivity', ax=axis)
+    sns.tsplot(data=rx_data, color='m', condition='Reflexivity', ax=axis)
+    if show_activation_time:
+        axis.axvline(x=activation_time, linestyle='--', linewidth=1,
+                     color='0.4')
+
+    axis.set_xlabel('Simulation cycles', fontsize=fontsize-1)
+    axis.set_ylabel('Number of Adopters', fontsize=fontsize-1)
+    axis.grid(False)
+
+    # X-axis limits
+    axis.set_xlim(0, 12)
+
+    # Y-axis limits
+    if ylim_bottom is not None:
+        axis.set_ylim(bottom=ylim_bottom)
+    else:
+        axis.set_ylim(bottom=0)
+    if ylim_top is not None:
+        axis.set_ylim(top=ylim_top)
+
+    if show_legend:
+        # frameon shows a box around the legend
+        legend = axis.legend(loc='best', fontsize=fontsize-2, frameon=True,
+                             framealpha=1.0)
+
+        # Set width of legend box
+        legend.get_frame().set_linewidth(1)
+    else:
+        axis.legend_.remove()
+    axis.tick_params(axis='both', which='major', labelsize=fontsize-1,
+                     width=0.8)
+
+    # Fix axes line width
+    plt.setp(axis.spines.values(), linewidth=0.8)
+
+    if filename is not None:
+        fig.savefig(filename, dpi=300, bbox_inches='tight')
+
+    # Restore style used for other plots.
+    sns.set_style('whitegrid')
