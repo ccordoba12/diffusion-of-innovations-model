@@ -9,11 +9,9 @@ Created on Sat Dec 10 10:45:16 2016
 from __future__ import division
 
 import glob
-import os
 import os.path as osp
 
 import numpy as np
-import matplotlib
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
@@ -23,9 +21,6 @@ import seaborn as sns
 from utilities import (compute_activation_time, get_max_adopters,
                        get_values_from_compute_run)
 
-
-if not os.name == 'nt':
-    matplotlib.rc('text', usetex=True)
 
 sns.set_style("whitegrid")
 
