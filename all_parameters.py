@@ -59,7 +59,7 @@ graph_types = {1: 'small_world',
 # =============================================================================
 output = dict(
     plot_adopters_and_global_utility = False,
-    plot_adopters = True,
+    plot_adopters = False,
     plot_adopters_type = False,
     save_adopters_percentage = False
 )
@@ -96,5 +96,5 @@ parameters = dict(
 # 3. These file are saved in a SAVED_RESULTS_DIR.
 # 4. The results are of these re-runs are saved in
 #    RERUNS_DIR.
-#PARAMETERS_FILE = 'social_influence_136.json'
-PARAMETERS_FILE = ''
+PARAMETERS_FILE = 'social_influence_372.json'
+#PARAMETERS_FILE = ''

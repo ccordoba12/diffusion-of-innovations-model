@@ -105,7 +105,7 @@ except:
         else:
             ipcluster_path = ipcluster_path.format('bin')
 
-        proc = subprocess.Popen([ipcluster_path, "start", "-n", "8"])
+        proc = subprocess.Popen([ipcluster_path, "start", "-n", "3"])
         atexit.register(proc.terminate)
         time.sleep(20)
         rc = Client()

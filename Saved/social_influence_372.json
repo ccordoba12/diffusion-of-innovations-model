@@ -2,9 +2,7 @@
     "run": {
         "number_of_times": 2000, 
         "parameter_values": [
-            0.3, 
-            0.6, 
-            0.9
+            0.3
         ], 
         "cumulative": false, 
         "main_parameter": "social_influence", 
