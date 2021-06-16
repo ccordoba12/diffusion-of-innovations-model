@@ -98,7 +98,8 @@ try:
 except:
     try:
         # Get ipcluster path
-        ipcluster_path = osp.join('.', 'envs', 'default', '{}', 'ipcluster')
+        HERE = osp.abspath(osp.dirname(__file__))
+        ipcluster_path = osp.join(HERE, 'envs', 'default', '{}', 'ipcluster')
         if os.name == 'nt':
             ipcluster_path = ipcluster_path.format('Scripts')
         else:
